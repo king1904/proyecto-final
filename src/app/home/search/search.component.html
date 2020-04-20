@@ -1,0 +1,21 @@
+<div class="wrap">
+  <div class="search">
+     <input  #searchBox type="text" class="searchTerm"  (input)="search(searchBox.value)">
+     <button type="submit" class="searchButton">
+       <i class="fa fa-search"></i>
+    </button>
+
+    <ul class="search-result">
+      <li *ngFor="let product of products$ | async" >
+        <a routerLink="/details/{{product.id}}">
+          {{product.nombre}}
+        </a>
+      </li>
+    </ul>
+
+  </div>
+</div>
+
+
+
+
