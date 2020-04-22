@@ -30,12 +30,14 @@ export class TokenInterceptorService implements HttpInterceptor{
     return next.handle(tokenizedReq).pipe(
       catchError(
         (err, caught) => {
-          if (err.status === 401){
+          if (err.status === 0) {
+            console.log(err)
             this.handleAuthError();
             return of(err);
-          }
-          throw err;
+
+
         }
+      }
       )
 
     );
@@ -46,8 +48,11 @@ export class TokenInterceptorService implements HttpInterceptor{
 
 
 private handleAuthError() {
-localStorage.removeItem("token");
-this.router.navigateByUrl('login');
+
+  localStorage.removeItem('token');
+localStorage.removeItem('user_data');
+
+this.router.navigateByUrl("/login");
 }
 
 

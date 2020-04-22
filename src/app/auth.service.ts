@@ -6,16 +6,18 @@ import{ Observable, BehaviorSubject, Subject } from "rxjs";
 import { UserI } from './models/user';
 import { JwtResponseI } from './models/jwt-response';
 import { Router, ActivatedRoute } from '@angular/router';
+import jwtDecode  from 'jwt-decode';
+import { UserResponse } from './models/user-response';
 
 
 @Injectable()
 export class AuthService {
 
-  userData= new BehaviorSubject<any>(null);
+  userData=new  BehaviorSubject<UserI>(null);
 
-  private navStateSource = new Subject<boolean>();
+ // private navStateSource = new Subject<boolean>();
 
-  loggedIn$ = new BehaviorSubject<boolean>(false);
+  loggedIn$ =new BehaviorSubject<boolean>(false);
   returnUrl:string;
 
 
@@ -24,7 +26,7 @@ export class AuthService {
   private token:string;
 
 
-  private currentUserSubject: BehaviorSubject<UserI>;
+  private currentUserSubject=new  BehaviorSubject<UserI>(null);
   public currentUser: Observable<UserI>;
 
   constructor(private http: HttpClient,private router :Router,
@@ -33,23 +35,29 @@ export class AuthService {
     this.currentUser = this.currentUserSubject.asObservable();
 
     if(this.loggedIn()){
-     // this.userName.next(JSON.parse(localStorage.getItem("user_data")).username);
-     this.userData.next(JSON.parse(localStorage.getItem("user_data")))
+
+      this.userData.next(JSON.parse(localStorage.getItem("user_data")))
     }
 
     this.loggedIn$.next(this.loggedIn());
 
+
    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+
+
 
   }
 
 
   loggedIn(){
-    return localStorage.getItem("token")? true:false;
+   //  let exp=jwtDecode(localStorage.getItem("token")).exp;
+    //let now=  Date.now();
+
+     return ( localStorage.getItem("token")) ?  true:  false;
+
+
+
   }
-
-
-
 
   register(user:UserI){
 
@@ -86,7 +94,7 @@ export class AuthService {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
 
             localStorage.setItem('token', user.jwt);
-            this.currentUserSubject.next(user);
+           // this.currentUserSubject.next(user);
             return user;
         })).subscribe(
           res=>{
@@ -120,23 +128,14 @@ export class AuthService {
     }
 
 
-   private saveToken(token : string ,expiresIn : string):void{
-    localStorage.setItem("ACCESS_TOKEN",token);
-    localStorage.setItem("EXPIRES_IN",expiresIn);
-
-    this.token=token;
-
-  }
-
    getToken():string{
-
-
     return localStorage.getItem("token");
   }
 
 
-  getUserData(email:string){
-    return this.http.get<UserI>(this.AUTH_SERVER+"/user/"+ email )
+
+  getUserData(email:string):Observable<UserResponse>{
+    return this.http.get<UserResponse>(this.AUTH_SERVER+"/user/"+ email )
     .pipe(map(user => {
 
         return user;

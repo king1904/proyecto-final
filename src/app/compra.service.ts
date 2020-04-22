@@ -9,11 +9,12 @@ import {  BehaviorSubject } from 'rxjs';
 })
 export class CompraService {
 cartProducts:number[]=[];
-cartItems:Product[]=[];
+itemsSubject = new BehaviorSubject<number[]>(null);
 
 sessionCartItems;
 
 comprasArray;
+comprasId:number[]=[];
 
 
 
@@ -23,15 +24,17 @@ AUTH_SERVER:string="http://localhost:8080";
 
 
   constructor(private http: HttpClient) {
-   if(localStorage.getItem("user_data")){
+  this.getCartProducts();
+
+    if(localStorage.getItem("user_data")){
     if(localStorage.getItem("cart"+JSON.parse( localStorage.getItem("user_data")).id)){
     this.cartProducts=JSON.parse(localStorage.getItem("cart"+JSON.parse( localStorage.getItem("user_data")).id));
   }
    }
 
-   this.cartItems= this.getCartProducts() ;
 
 }
+
 
 
 getCartProducts():Product[]{
@@ -42,9 +45,6 @@ getCartProducts():Product[]{
 
   let cartProductos:Product[]=[];
   this.cartItemsSubject.next(idSet.size )
-
-
-
 
 
   for( let id of idSet){
@@ -64,12 +64,19 @@ getCartProducts():Product[]{
   }
 
 
+
   getMisCompras(id :number){
 
     return this.http.get<any>(this.AUTH_SERVER+"/compras/"+id)
         .pipe(map(data => {
-           console.log(data)
-            return data;
+         let ids:any[]=[];
+        for(let d of data){
+          console.log(d.id)
+          ids.push(d.productId)
+        }
+        console.log(ids)
+
+            return ids;
         }))
   }
 
@@ -83,7 +90,7 @@ getProductoById(id:number){
 
 }
 
-
+//No lo estoy usando por ahora porque estoy usando el local storage
 getCartByUserId(id:number){
   return this.http.get<any>("http://localhost:8080/cart/"+id)
         .pipe(map(data => {

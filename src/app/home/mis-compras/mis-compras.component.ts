@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CompraService } from 'src/app/compra.service';
+import { threadId } from 'worker_threads';
+import { AuthService } from 'src/app/auth.service';
+import { switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-mis-compras',
@@ -8,42 +12,22 @@ import { CompraService } from 'src/app/compra.service';
 })
 export class MisComprasComponent implements OnInit {
 
-  comprasId:number[]=[];
-  compras:any[];
+   compras:any[];
   comprasArray:any[]=[];
-  constructor(private compraService:CompraService) { }
+  userId:number=0;
+
+  constructor(private compraService:CompraService,private authService:AuthService) { }
 
   ngOnInit(): void {
-    this.comprasId=this.compraService.getProductosId();
 
-    setTimeout(()=>{
-      console.log(this.comprasId);
-      this.asignarCompras();
-      console.log(this.comprasArray);
-    }
-      ,400);
+this.authService.userData.subscribe(data=> this.userId=data.id);
 
+    this.compraService.getMisCompras(this.userId).subscribe(data=>{
+      for(let id of data){
+         this.compraService.getProductoById(id).subscribe(data=>this.comprasArray.push(data))
+        }
 
-
-
-
-
-
-
-
-
+        })
   }
-
-  private asignarCompras(){
-    for(let i=0;i<this.comprasId.length;i++){
-
-
-      this.compraService.getProductoById(this.comprasId[i]).subscribe(data=>{
-        this.comprasArray.push(data);
-      });
-    }
-  }
-
-
 
 }

@@ -43,7 +43,7 @@ else{
 
 
 onLogout(){
-  this.authService.loggedIn$.next(false)
+  this.authService.loggedIn$.next(false);
 
   this.authService.logout();
   this.userName="Profile";
