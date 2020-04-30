@@ -40,7 +40,7 @@ body{
 
 /*Resize the wrap to see the search bar change!*/
 .wrap{
-  width: 30%;
+  width: 40%;
   position: relative;
   top: 50%;
   left: 50%;
@@ -84,3 +84,10 @@ ul.search-result {
   margin-top: 0;
   padding-left: 0;
 }
+
+
+
+
+
+
+

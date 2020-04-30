@@ -8,11 +8,23 @@
       <li class="nav-item active">
         <a class="nav-link"  [routerLink]="['/home']">Home <span class="sr-only">(current)</span></a>
       </li>
+      <li class="nav-item dropdown ">
+        <a class="nav-link dropdown-toggle float-right" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+         Productos
+        </a>
+
+        <div class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" [routerLink]="['/category/pc']">Sobremesa</a>
+          <a class="dropdown-item" [routerLink]="['/category/laptop']">Portatil</a>
+          <a class="dropdown-item" [routerLink]="['/category/mobile']">Móvil</a>
+        </div>
+      </li>
+
       <li class="nav-item">
-        <a class="nav-link"  [routerLink]="['/login']" *ngIf="logged$==false">Login</a>
+        <a class="nav-link"  [routerLink]="['/login']" *ngIf="logged==false">Login</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/register']" *ngIf="logged$==false">Register</a>
+        <a class="nav-link" [routerLink]="['/register']" *ngIf="logged==false">Register</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" [routerLink]="['/contact']">Contact us</a>
@@ -27,14 +39,18 @@
         <div class="dropdown-menu profile " aria-labelledby="navbarDropdownMenuLink">
           <a class="dropdown-item" [routerLink]="['/profile']">My profile</a>
           <a class="dropdown-item" [routerLink]="['/compras']">Mis Compras</a>
-          <a class="dropdown-item" (click)="onLogout()" *ngIf="logged$==true">Logout</a>
+          <a class="dropdown-item" [routerLink]="['/admin/addProduct']"  *ngIf="isAdmin==true">Añadir Producto</a>
+          <a class="dropdown-item" [routerLink]="['/admin/messages']"  *ngIf="isAdmin==true">Leer mensajes</a>
+          <a class="dropdown-item" [routerLink]="['/admin/users']"  *ngIf="isAdmin==true">App Users</a>
+
+          <a class="dropdown-item" (click)="onLogout()" *ngIf="logged==true">Logout</a>
 
         </div>
       </li>
 
       <li class="nav-item ">
         <a class="nav-link "  [routerLink]="['/cart']"> <i class="fa" style="font-size:24px">&#xf07a;</i>
-          <span class='badge badge-warning' id='lblCartCount' *ngIf="logged$==true"> {{ cartItems$}} </span>
+          <span class='badge badge-warning' id='lblCartCount' *ngIf="logged==true"> {{ cartItems$}} </span>
           </a>
       </li>
     </ul>

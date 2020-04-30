@@ -30,4 +30,17 @@ export class PostsService {
 
     return this.http.put<Post>("http://localhost:8080/posts",post);
   }
+
+
+
+
+  getMessages(){
+    return this.http.get("http://localhost:8080/message/");
+  }
+
+  postMessage(message){
+    return this.http.post("http://localhost:8080/message/",message);
+  }
+
+
 }

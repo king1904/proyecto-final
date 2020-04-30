@@ -54,7 +54,7 @@ likes:new FormControl(0),
 
 onPost(){
 
-  if(this.postForm.value.text!=""){
+  if(this.postForm.value.text.trim()!=""){
 let post:Post=this.postForm.value;
 this.postsService.addPostToProduct(post).subscribe( res=>{
 this.posts= [res,...this.posts]

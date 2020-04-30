@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CompraService } from 'src/app/compra.service';
-import { threadId } from 'worker_threads';
 import { AuthService } from 'src/app/auth.service';
 import { switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';

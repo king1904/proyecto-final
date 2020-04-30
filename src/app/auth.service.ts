@@ -18,6 +18,8 @@ export class AuthService {
  // private navStateSource = new Subject<boolean>();
 
   loggedIn$ =new BehaviorSubject<boolean>(false);
+  isAdmin$ =new BehaviorSubject<boolean>(false);
+
   returnUrl:string;
 
 
@@ -40,7 +42,7 @@ export class AuthService {
     }
 
     this.loggedIn$.next(this.loggedIn());
-
+    this.isAdmin$.next(this.isAdmin());
 
    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
@@ -50,14 +52,16 @@ export class AuthService {
 
 
   loggedIn(){
-   //  let exp=jwtDecode(localStorage.getItem("token")).exp;
-    //let now=  Date.now();
 
      return ( localStorage.getItem("token")) ?  true:  false;
-
-
-
   }
+
+  isAdmin(){
+    if(localStorage.getItem("user_data"))
+        return ( JSON.parse(localStorage.getItem("user_data")).roles =="ROLE_ADMIN") ?  true:  false;
+  }
+
+
 
   register(user:UserI){
 
@@ -79,6 +83,7 @@ export class AuthService {
             localStorage.setItem('token', user.jwt);
             this.currentUserSubject.next(user);
             return user;
+
         }))
 
       }
@@ -90,15 +95,10 @@ export class AuthService {
   login(email: string, password: string) {
 
     return this.http.post<any>(this.AUTH_SERVER+"/login", { email, password })
-        .pipe(map(user => {
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
-
-            localStorage.setItem('token', user.jwt);
-           // this.currentUserSubject.next(user);
-            return user;
-        })).subscribe(
+  .subscribe(
           res=>{
-           console.log(res);
+            localStorage.setItem('token', res.jwt);
+
            this.loggedIn$.next(true);
 
            this.router.navigateByUrl(this.returnUrl);
@@ -109,6 +109,7 @@ export class AuthService {
             return true;
 
         });
+
           },error=>{
             console.log(error);
 
@@ -136,9 +137,11 @@ export class AuthService {
 
   getUserData(email:string):Observable<UserResponse>{
     return this.http.get<UserResponse>(this.AUTH_SERVER+"/user/"+ email )
-    .pipe(map(user => {
 
-        return user;
-    }));
+  }
+
+  getAllUsers():Observable<UserResponse[]>{
+    return this.http.get<UserResponse[]>(this.AUTH_SERVER+"/user" )
+
   }
 }

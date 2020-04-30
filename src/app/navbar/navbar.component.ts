@@ -12,7 +12,9 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
-   logged$:boolean;
+   logged:boolean;
+   isAdmin:boolean;
+
   cartItems$;
   userName ;
 
@@ -22,9 +24,10 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
 
 
+ this.authService.isAdmin$.subscribe(data=> this.isAdmin=data);
 
 
- this.authService.loggedIn$.subscribe(data=> this.logged$=data);
+ this.authService.loggedIn$.subscribe(data=> this.logged=data);
 
 this.authService.userData.subscribe(data=>{ if(data){ this.userName=data.username}
 else{
@@ -44,6 +47,7 @@ else{
 
 onLogout(){
   this.authService.loggedIn$.next(false);
+  this.authService.isAdmin$.next(false);
 
   this.authService.logout();
   this.userName="Profile";

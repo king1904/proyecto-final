@@ -55,6 +55,11 @@ getCartProducts():Product[]{
 
 }
 
+
+addProduct(product){
+  return this.http.post("http://localhost:8080/productos/",product);
+}
+
   addCart(productId:number){
 
       this.cartProducts.push(productId);

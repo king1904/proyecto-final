@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService } from "../../auth.service";
 import { FormGroup, FormControl } from '@angular/forms';
+import { CompraService } from 'src/app/compra.service';
 
 @Component({
   selector: 'app-login',
@@ -19,9 +20,10 @@ export class LoginComponent implements OnInit {
 });
 
   constructor(private authSerive: AuthService,private router :Router   ,
-         private route: ActivatedRoute) { }
+         private route: ActivatedRoute ,private compraService :CompraService) { }
 
   ngOnInit(): void {
+    this.compraService.getCartProducts();
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
 
   }
@@ -34,12 +36,15 @@ export class LoginComponent implements OnInit {
        console.log(res);
        this.authSerive.loggedIn$.next(true);
 
+
        this.router.navigateByUrl(this.returnUrl);
        this.authSerive.getUserData(this.loginForm.value.email).subscribe(data=>   {
+
+         if(data.roles=="ROLE_ADMIN")       { this.authSerive.isAdmin$.next(true)};
+
         localStorage.setItem("user_data",  JSON.stringify(data));
 
         this.authSerive.userData.next(JSON.parse(localStorage.getItem("user_data")));
-
 
     });
       },error=>{

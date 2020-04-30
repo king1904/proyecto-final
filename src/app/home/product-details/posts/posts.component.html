@@ -2,7 +2,7 @@
           <div class="tab-pane fade show active" id="reviews">
             <br>
             <form class="well padding-bottom-10" [formGroup]="postForm" (ngSubmit)="onPost()">
-              <textarea rows="2" class="form-control" placeholder="Write a review" formControlName="text" required></textarea>
+              <textarea rows="2" class="form-control" placeholder="Write a review" formControlName="text" minlength="5" required></textarea>
               <div class="margin-top-10">
                 <button type="submit" class="btn btn-sm btn-primary pull-right">
                   Submit Review

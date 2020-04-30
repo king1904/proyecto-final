@@ -16,6 +16,23 @@ export class ProductService {
     return this.http.get("http://localhost:8080/productos");
   }
 
+  getProductsPc(){
+
+    return this.http.get("http://localhost:8080/productos/categoria/pc");
+  }
+  getProductsLaptop(){
+
+    return this.http.get("http://localhost:8080/productos/categoria/laptop");
+  }
+  getProductsMobile(){
+
+    return this.http.get("http://localhost:8080/productos/categoria/mobile");
+  }
+
+
+
+
+
   getProductById(id:number){
 
     return this.http.get<Product>("http://localhost:8080/productos/"+id);

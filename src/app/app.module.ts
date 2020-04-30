@@ -23,6 +23,14 @@ import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { PostsComponent } from './home/product-details/posts/posts.component';
 import { MisComprasComponent } from './home/mis-compras/mis-compras.component';
 import { AuthService } from './auth.service';
+import { NgxPayPalModule } from 'ngx-paypal';
+import { AddProductComponent } from './home/admin/add-product/add-product.component';
+import { ReadMessagesComponent } from './home/admin/read-messages/read-messages.component';
+import { UserControlComponent } from './home/admin/user-control/user-control.component';
+import { PcComponent } from './home/category/pc/pc.component';
+import { LaptopComponent } from './home/category/laptop/laptop.component';
+import { MobileComponent } from './home/category/mobile/mobile.component';
+
 
 
 
@@ -42,6 +50,12 @@ import { AuthService } from './auth.service';
     LoadingSpinnerComponent,
     PostsComponent,
     MisComprasComponent,
+    AddProductComponent,
+    ReadMessagesComponent,
+    UserControlComponent,
+    PcComponent,
+    LaptopComponent,
+    MobileComponent,
 
   ],
   imports: [
@@ -53,6 +67,7 @@ import { AuthService } from './auth.service';
     FormsModule,
     AuthModule,
     ReactiveFormsModule,
+    NgxPayPalModule
 
 
 
