@@ -2,47 +2,94 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/auth.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { UserI } from 'src/app/models/user';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  styleUrls: ['./profile.component.css'],
 })
 export class ProfileComponent implements OnInit {
-user:UserI= JSON.parse(localStorage.getItem("user_data"));;
+  user: UserI;
 
-updateForm = new FormGroup({
-  id: new FormControl(this.user.id),
-  active: new FormControl(1),
-  img: new FormControl(this.user.img),
-  firstname: new FormControl(this.user.firstname),
-  lastname: new FormControl(this.user.lastname),
-  website: new FormControl(this.user.website),
-  info: new FormControl(this.user.info),
+  updateForm = new FormGroup({
+    imgName: new FormControl(
+      JSON.parse(localStorage.getItem('user_data')).userDetails.img.name
+    ),
+    firstname: new FormControl(
+      JSON.parse(localStorage.getItem('user_data')).userDetails.firstname
+    ),
+    lastname: new FormControl(
+      JSON.parse(localStorage.getItem('user_data')).userDetails.lastname
+    ),
+    website: new FormControl(
+      JSON.parse(localStorage.getItem('user_data')).userDetails.website
+    ),
+    info: new FormControl(
+      JSON.parse(localStorage.getItem('user_data')).userDetails.info
+    ),
+    username: new FormControl(
+      JSON.parse(localStorage.getItem('user_data')).username
+    ),
+    email: new FormControl(JSON.parse(localStorage.getItem('user_data')).email),
+    password: new FormControl(
+      JSON.parse(localStorage.getItem('user_data')).password
+    ),
+  });
 
-  username: new FormControl(this.user.username),
-  email: new FormControl(this.user.email),
-  roles: new FormControl(this.user.roles),
-  password: new FormControl(this.user.password),
-});
+  constructor(private authService: AuthService) {}
 
+  async ngOnInit() {
+    // this.user=JSON.parse(localStorage.getItem("user_data"));
+    this.authService
+      .getUserById(JSON.parse(localStorage.getItem('user_data')).id)
+      .subscribe((data) => {
+         this.user = data;
+        console.log(data);
+      });
 
-  constructor(private authService:AuthService) { }
-
-
-  ngOnInit(): void {
-
-       console.log(this.user);
+    //this.authService.getUserById()
+    console.log(this.user);
   }
 
-  onSubmit(){
-this.authService.updateProfile(this.updateForm.value).subscribe(res=>{
-console.log(res);
-localStorage.removeItem("user_data");
-this.authService.login(this.updateForm.value.email,this.updateForm.value.password);
-},error=>{
-console.log(error)
-})
+  onSubmit() {
+    let user: UserI = this.authService.userData.value;
 
+    let userSent = {
+      id: JSON.parse(localStorage.getItem('user_data')).id,
+      username: this.updateForm.value.username,
+      userDetails: {
+        id: JSON.parse(localStorage.getItem('user_data')).userDetails.id,
+        firstname: this.updateForm.value.firstname,
+        lastname: this.updateForm.value.lastname,
+        website: this.updateForm.value.website,
+        info: this.updateForm.value.info,
+        img: {
+          id: JSON.parse(localStorage.getItem('user_data')).userDetails.img.id,
+          name: this.updateForm.value.imgName,
+          originalName: JSON.parse(localStorage.getItem('user_data'))
+            .userDetails.img.originalName,
+          date: JSON.parse(localStorage.getItem('user_data')).userDetails.img
+            .date,
+        },
+      },
+      email: this.updateForm.value.email,
+
+      password: this.updateForm.value.password,
+    };
+
+    console.log(JSON.stringify(userSent));
+
+    this.authService.updateProfile(userSent).subscribe(
+      (res) => {
+        console.log(res);
+
+        //localStorage.removeItem("user_data");
+    localStorage.setItem('user_data', JSON.stringify(res));
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
 }

@@ -11,7 +11,7 @@
 
       <div class="col-md-4" *ngFor="let product of products$ | async |paginate: { itemsPerPage: 9, currentPage: p }"  >
 
-        <figure class="card card-product-grid card-lg"> <a   class="img-wrap" data-abc="true"><img src="{{ product.img }}"></a>
+        <figure class="card card-product-grid card-lg"> <a   class="img-wrap" data-abc="true"><img src="{{ product.imgs[0].name  }}"></a>
               <figcaption class="info-wrap">
                   <div class="row">
                       <div class="col-md-8"> <a  class="title" data-abc="true">{{product.nombre}}</a> </div>

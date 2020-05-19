@@ -11,15 +11,15 @@
 		                </div>
 		            </div>
 		            <div class="row">
-		                <div class="col-md-12">
+		                <div class="col-md-12" *ngIf="user">
 		                    <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
-                          <div class="form-group row">
+                          <div class="form-group row"  >
                             <label for="img" class="col-4 col-form-label"  >Profile Pic
-                             <img class="imagen" src="{{ user.img }}" alt="">
+                             <img class="imagen" src="{{ user.userDetails.img.name }}"  alt="" >
 
                             </label>
                             <div class="col-8">
-                             <input id="img" name="img" placeholder="{{user.img}}" formControlName="img" class="form-control here"  type="text">
+                             <input id="img" name="img" placeholder="Profile Picture"  formControlName="imgName" class="form-control here"  type="text">
                             </div>
 
                           </div>
@@ -32,13 +32,13 @@
                               <div class="form-group row">
                                 <label for="name" class="col-4 col-form-label">First Name</label>
                                 <div class="col-8">
-                                  <input id="name" name="name" placeholder="{{user.firstname}}" formControlName="firstname" class="form-control here" type="text">
+                                  <input id="name" name="name" placeholder="{{user.userDetails.firstname}}" formControlName="firstname" class="form-control here" type="text">
                                 </div>
                               </div>
                               <div class="form-group row">
                                 <label for="lastname" class="col-4 col-form-label">Last Name</label>
                                 <div class="col-8">
-                                  <input id="lastname" name="lastname" placeholder="{{user.lastname}}" formControlName="lastname" class="form-control here" type="text">
+                                  <input id="lastname" name="lastname" placeholder="{{user.userDetails.lastname}}" formControlName="lastname" class="form-control here" type="text">
                                 </div>
                               </div>
 
@@ -46,32 +46,32 @@
                               <div class="form-group row">
                                 <label for="select" class="col-4 col-form-label"  >Display my Role as</label>
                                 <div class="col-8">
-                                  <input id="select" name="select" placeholder="{{user.roles}}" class="custom-select" formControlName="roles">
+                                  <input id="select" name="text" placeholder="{{user.roles}}" class="form-control here"  disabled>
                                 </div>
 
                               </div>
                               <div class="form-group row">
                                 <label for="email" class="col-4 col-form-label"  >Email*</label>
                                 <div class="col-8">
-                                  <input id="email" name="email" placeholder="{{user.email}}" class="form-control here" required="required" type="text" formControlName="email">
+                                  <input id="email" name="email" placeholder="{{user.email}}" class="form-control here"  type="text" formControlName="email">
                                 </div>
                               </div>
                               <div class="form-group row">
                                 <label for="website" class="col-4 col-form-label" >Website</label>
                                 <div class="col-8">
-                                  <input id="website" name="website" placeholder="{{user.website}}" formControlName="website" class="form-control here" type="text">
+                                  <input id="website" name="website" placeholder="{{user.userDetails.website}}" formControlName="website" class="form-control here" type="text">
                                 </div>
                               </div>
                               <div class="form-group row">
                                 <label for="publicinfo" class="col-4 col-form-label">Public Info</label>
                                 <div class="col-8">
-                                  <textarea id="publicinfo" name="publicinfo" cols="40" rows="4" class="form-control" formControlName="info">{{user.info}}</textarea>
+                                  <textarea id="publicinfo" name="publicinfo" cols="40" rows="4" class="form-control" formControlName="info">{{user.userDetails.info}}</textarea>
                                 </div>
                               </div>
                               <div class="form-group row">
                                 <label for="newpass" class="col-4 col-form-label"  >New Password</label>
                                 <div class="col-8">
-                                  <input id="newpass" type="password" name="newpass" placeholder="New Password" class="form-control here" type="text" formControlName="password">
+                                  <input id="newpass" type="password" name="newpass" placeholder="New Password" class="form-control here"  formControlName="password">
                                 </div>
                               </div>
                               <div class="form-group row">

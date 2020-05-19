@@ -1,147 +1,116 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient } from '@angular/common/http';
 
 import { tap, map } from 'rxjs/operators';
-import{ Observable, BehaviorSubject, Subject } from "rxjs";
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { UserI } from './models/user';
-import { JwtResponseI } from './models/jwt-response';
 import { Router, ActivatedRoute } from '@angular/router';
-import jwtDecode  from 'jwt-decode';
-import { UserResponse } from './models/user-response';
 
+import { CompraService } from './compra.service';
 
 @Injectable()
 export class AuthService {
+  userData = new BehaviorSubject<UserI>(null);
 
-  userData=new  BehaviorSubject<UserI>(null);
+  // private navStateSource = new Subject<boolean>();
 
- // private navStateSource = new Subject<boolean>();
+  loggedIn$ = new BehaviorSubject<boolean>(false);
+  isAdmin$ = new BehaviorSubject<boolean>(false);
 
-  loggedIn$ =new BehaviorSubject<boolean>(false);
-  isAdmin$ =new BehaviorSubject<boolean>(false);
+  returnUrl: string;
 
-  returnUrl:string;
+  AUTH_SERVER: string = 'http://localhost:8080';
 
-
-  AUTH_SERVER:string="http://localhost:8080";
-  //authSubject= new BehaviorSubject(false);
-  private token:string;
-
-
-  private currentUserSubject=new  BehaviorSubject<UserI>(null);
   public currentUser: Observable<UserI>;
 
-  constructor(private http: HttpClient,private router :Router,
-    private route: ActivatedRoute) {
-    this.currentUserSubject = new BehaviorSubject<UserI>(JSON.parse(localStorage.getItem('currentUser')));
-    this.currentUser = this.currentUserSubject.asObservable();
-
-    if(this.loggedIn()){
-
-      this.userData.next(JSON.parse(localStorage.getItem("user_data")))
-    }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private route: ActivatedRoute,
+    private compraService:CompraService
+  ) {
+    if (this.loggedIn()) {
+      this.userData.next(JSON.parse(localStorage.getItem('user_data')));
+     }
 
     this.loggedIn$.next(this.loggedIn());
     this.isAdmin$.next(this.isAdmin());
 
-   this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-
-
-
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
-
-  loggedIn(){
-
-     return ( localStorage.getItem("token")) ?  true:  false;
+  loggedIn() {
+    return localStorage.getItem('token') ? true : false;
   }
 
-  isAdmin(){
-    if(localStorage.getItem("user_data"))
-        return ( JSON.parse(localStorage.getItem("user_data")).roles =="ROLE_ADMIN") ?  true:  false;
+  isAdmin() {
+    if (localStorage.getItem('user_data'))
+      return JSON.parse(localStorage.getItem('user_data')).roles == 'ROLE_ADMIN'
+        ? true
+        : false;
   }
 
-
-
-  register(user:UserI){
-
-    return this.http.post(this.AUTH_SERVER+"/register",user);
+  register(user: UserI) {
+    return this.http.post(this.AUTH_SERVER + '/register', user);
   }
 
-  updateProfile(user:UserI){
-
-    return this.http.put(this.AUTH_SERVER+"/update",user);
+  updateProfile(user) {
+    return this.http.patch(this.AUTH_SERVER + '/update', user);
   }
-
 
   login1(email: string, password: string) {
+    return this.http
+      .post<any>(this.AUTH_SERVER + '/login', { email, password })
+      .pipe(
+        map((user) => {
+          // store user details and jwt token in local storage to keep user logged in between page refreshes
 
-    return this.http.post<any>(this.AUTH_SERVER+"/login", { email, password })
-        .pipe(map(user => {
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
+          localStorage.setItem('token', user.jwt);
+          localStorage.setItem('user_data', JSON.stringify(user.usuario));
 
-            localStorage.setItem('token', user.jwt);
-            this.currentUserSubject.next(user);
-            return user;
-
-        }))
-
-      }
-
-
-
-
+          return user;
+        })
+      );
+  }
 
   login(email: string, password: string) {
+    return this.http
+      .post<any>(this.AUTH_SERVER + '/login', { email, password })
+      .subscribe(
+        (res) => {
+          localStorage.setItem('token', res.jwt);
+          localStorage.setItem('user_data', JSON.stringify(res.usuario));
 
-    return this.http.post<any>(this.AUTH_SERVER+"/login", { email, password })
-  .subscribe(
-          res=>{
-            localStorage.setItem('token', res.jwt);
+          this.loggedIn$.next(true);
+          this.userData.next(JSON.parse(localStorage.getItem('user_data')));
 
-           this.loggedIn$.next(true);
+          this.router.navigateByUrl(this.returnUrl);
+        },
+        (error) => {
+          console.log(error);
 
-           this.router.navigateByUrl(this.returnUrl);
-           this.getUserData(email).subscribe(data=>   {
-            localStorage.setItem("user_data",  JSON.stringify(data));
-
-            this.userData.next(JSON.parse(localStorage.getItem("user_data")));
-            return true;
-
-        });
-
-          },error=>{
-            console.log(error);
-
-            return false;
-          }
-        );
-}
-
-
-
-
-    logout() {
-        // remove user from local storage to log user out
-        localStorage.removeItem('token');
-        localStorage.removeItem('user_data');
-        this.router.navigateByUrl("/home");
-    }
-
-
-   getToken():string{
-    return localStorage.getItem("token");
+          return false;
+        }
+      );
   }
 
+  logout() {
+    // remove user from local storage to log user out
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_data');
+    this.router.navigateByUrl('/home');
+  }
 
+  getToken(): string {
+    return localStorage.getItem('token');
+  }
 
-  getUserData(email:string):Observable<UserResponse>{
-    return this.http.get<UserResponse>(this.AUTH_SERVER+"/user/"+ email )
+  getUserById(id:number):Observable<UserI>{
+    return this.http.get<UserI>(this.AUTH_SERVER+"/user/"+ id )
 
   }
 
-  getAllUsers():Observable<UserResponse[]>{
-    return this.http.get<UserResponse[]>(this.AUTH_SERVER+"/user" )
-
+  getAllUsers(): Observable<UserI[]> {
+    return this.http.get<UserI[]>(this.AUTH_SERVER + '/user');
   }
 }

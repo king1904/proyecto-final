@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Product } from './product.interface';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import {  BehaviorSubject } from 'rxjs';
+import {  BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,6 @@ AUTH_SERVER:string="http://localhost:8080";
 
 
   constructor(private http: HttpClient) {
-  this.getCartProducts();
 
     if(localStorage.getItem("user_data")){
     if(localStorage.getItem("cart"+JSON.parse( localStorage.getItem("user_data")).id)){
@@ -37,7 +36,7 @@ AUTH_SERVER:string="http://localhost:8080";
 
 
 
-getCartProducts():Product[]{
+getCartProductslocal() {
 
   if(localStorage.getItem("user_data")){
   let ids:number[]=JSON.parse(localStorage.getItem("cart"+JSON.parse(localStorage.getItem("user_data")).id));

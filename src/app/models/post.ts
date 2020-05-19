@@ -1,8 +1,9 @@
+import { UserI } from './user';
+
 export interface Post{
-userId:number;
-productId:number;
+  id:number;
+user:UserI;
 text:string;
-img:string;
 likes:number;
 }
 

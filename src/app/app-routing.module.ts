@@ -15,6 +15,7 @@ import { UserControlComponent } from './home/admin/user-control/user-control.com
 import { PcComponent } from './home/category/pc/pc.component';
 import { MobileComponent } from './home/category/mobile/mobile.component';
 import { LaptopComponent } from './home/category/laptop/laptop.component';
+import { ChatComponent } from './home/chat/chat.component';
 
 const routes: Routes = [
   {path:"",redirectTo:"/home",pathMatch:'full'},
@@ -24,6 +25,7 @@ const routes: Routes = [
   {path:"category/pc",component:PcComponent },
   {path:"category/mobile",component:MobileComponent },
   {path:"category/laptop",component:LaptopComponent },
+  {path:"chat",component:ChatComponent,canActivate:[AuthGuard]},
 
   {path:"profile",component:ProfileComponent,canActivate:[AuthGuard]},
   {path:"cart",component:CartComponent,canActivate:[AuthGuard]},

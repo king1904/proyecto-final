@@ -30,6 +30,7 @@ import { UserControlComponent } from './home/admin/user-control/user-control.com
 import { PcComponent } from './home/category/pc/pc.component';
 import { LaptopComponent } from './home/category/laptop/laptop.component';
 import { MobileComponent } from './home/category/mobile/mobile.component';
+import { ChatComponent } from './home/chat/chat.component';
 
 
 
@@ -56,6 +57,7 @@ import { MobileComponent } from './home/category/mobile/mobile.component';
     PcComponent,
     LaptopComponent,
     MobileComponent,
+    ChatComponent,
 
   ],
   imports: [

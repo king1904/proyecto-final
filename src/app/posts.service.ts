@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Post } from './models/post';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 
 @Injectable({
@@ -16,19 +16,19 @@ export class PostsService {
 
    }
 
-  getPostsByProductId(id:number){
+  getPostsByProductId(id:number):Observable<Post[]>{
 
-    return this.http.get("http://localhost:8080/posts/"+id);
+    return this.http.get<Post[]>("http://localhost:8080/posts/"+id);
   }
 
-  addPostToProduct(post:Post){
+  addPostToProduct(post){
 
-    return this.http.post<Post>("http://localhost:8080/posts",post);
+    return this.http.post<any>("http://localhost:8080/posts",post);
   }
 
   addLikeToPost(post){
 
-    return this.http.put<Post>("http://localhost:8080/posts",post);
+    return this.http.patch<any>("http://localhost:8080/posts",post);
   }
 
 

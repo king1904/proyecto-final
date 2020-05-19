@@ -19,13 +19,7 @@ export class ProductDetailsComponent implements OnInit , OnDestroy{
 
   cartItems=0;
   private productId:number;
-  public productoActual:Product={
-    nombre:'',
-    descripcion:'',
-    img:'',
-    precio:0,
-    stock:0,
-  };
+  public productoActual:Product;
 
   constructor(private route: ActivatedRoute,private productService:ProductService,
     private compraService:CompraService) {}
@@ -47,7 +41,10 @@ export class ProductDetailsComponent implements OnInit , OnDestroy{
    }
 
   getProductById(id:number){
-    this.productSub= this.productService.getProductById(id).subscribe((data:Product) =>this.productoActual=data)
+    this.productSub= this.productService.getProductById(id).subscribe((data:Product) =>{
+      console.log(data)
+      this.productoActual=data
+    })
 
   }
 

@@ -4,76 +4,99 @@
 
 <div class="col-sm-12 col-md-12 col-lg-12">
   <!-- product -->
-<div class="product-content product-wrap clearfix product-deatil">
-  <div class="row">
-      <div class="col-md-5 col-sm-12 col-xs-12 ">
-        <div class="product-image">
-          <div id="myCarousel-2" class="carousel slide">
+  <div class="product-content product-wrap clearfix product-deatil">
+    <div class="row">
+      <div class="col-md-5 col-sm-12 col-xs-12 "  >
+        <div class="product-image" *ngIf="productoActual">
 
 
-          <div class="carousel-inner">
-            <!-- Slide 1 -->
-            <div class="item active">
-              <img src="{{productoActual.img}}" alt="" class="imagenProduct">
+          <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+              <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+              <div *ngFor="let img of productoActual.imgs ;let i =index">
+                <li data-target="#carouselExampleIndicators" data-slide-to="i" *ngIf="i>=1"></li>
+              </div>
+
+            </ol>
+
+            <div class="carousel-inner">
+
+              <div *ngFor="let img of productoActual.imgs ;let i =index">
+                <div class="carousel-item " [ngClass]="{
+                'active': i==0
+              }">
+
+                  <img class="d-block w-100 imagenProduct" src="{{img.name}}" alt="slide {{i}}">
+
+                </div>
+              </div>
+
             </div>
-
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
           </div>
 
-          </div>
+
+
         </div>
       </div>
       <div class="col-md-7 col-sm-12 col-xs-12">
 
-      <h2 class="name">
-        {{ productoActual.nombre }}
+        <h2 class="name">
+          {{ productoActual.nombre }}
 
 
-      </h2>
-      <hr>
-      <div>
+        </h2>
+        <hr>
+        <div>
 
-        {{ productoActual.descripcion }}
+          {{ productoActual.descripcion }}
 
-      </div>
-      <hr>
-      <h3 class="price-container">
-      Precio:  {{ productoActual.precio | currency }}   Available: {{ productoActual.stock }}
-
-
-        <div class="col-sm-12 col-md-6 col-lg-6">
-          <br>
-          <a   class="btn btn-success btn-lg" (click)="addToCart()">Add to cart </a>
-      </div>
-      </h3>
-      <div class="certified">
-        <ul>
-          <li><a href="javascript:void(0);">Delivery time<span>7 Working Days</span></a></li>
-          <li><a href="javascript:void(0);">Certified<span>Quality Assured</span></a></li>
-        </ul>
-      </div>
-      <hr>
-      <div class="description description-tabs">
-        <ul id="myTab" class="nav nav-pills">
-
-          <li class="reviews"><a href="#reviews" data-toggle="tab">Comments</a></li>
-        </ul>
-        <div id="myTabContent" class="tab-content">
-          <app-posts></app-posts>
         </div>
-      </div>
-      <hr>
-      <div class="row">
+        <hr>
+        <h3 class="price-container">
+          Precio: {{ productoActual.precio | currency }} Available: {{ productoActual.stock }}
 
 
-        <div class="col-sm-12 col-md-6 col-lg-6">
-          <div class="btn-group pull-right">
-                          <button class="btn btn-white btn-default"><i class="fa fa-star"></i> Add to wishlist </button>
-                          <button class="btn btn-white btn-default"><i class="fa fa-envelope"></i> Contact Seller</button>
-                      </div>
+          <div class="col-sm-12 col-md-6 col-lg-6">
+            <br>
+            <a class="btn btn-success btn-lg" (click)="addToCart()">Add to cart </a>
+          </div>
+        </h3>
+        <div class="certified">
+          <ul>
+            <li><a href="javascript:void(0);">Delivery time<span>7 Working Days</span></a></li>
+            <li><a href="javascript:void(0);">Certified<span>Quality Assured</span></a></li>
+          </ul>
+        </div>
+        <hr>
+
+
+        <div class="row">
+
+
+          <div class="col-sm-12 col-md-6 col-lg-6">
+            <div class="btn-group pull-right">
+              <button class="btn btn-white btn-default"><i class="fa fa-star"></i> Add to wishlist </button>
+              <button class="btn btn-white btn-default"><i class="fa fa-envelope"></i> Contact Seller</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<!-- end product -->
+
+  <!-- end product -->
+  <br> <br>
+
+  <h3>Comentarios: </h3>
+  <br> <br>
+  <app-posts></app-posts>
+
 </div>

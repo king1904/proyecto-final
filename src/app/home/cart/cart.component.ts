@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CompraService } from 'src/app/compra.service';
-import { Product } from 'src/app/product.interface';
 import { Subject, Observable } from 'rxjs';
 import { IPayPalConfig, ICreateOrderRequest } from 'ngx-paypal';
+import { ProductI } from 'src/app/models/product';
+import { AuthService } from 'src/app/auth.service';
 
 @Component({
   selector: 'app-cart',
@@ -13,15 +14,17 @@ export class CartComponent implements OnInit {
 
   public payPalConfig?: IPayPalConfig;
 
-  cartObservable = new Observable<Product[]>();
-  cartItems:Product[]=[];
+  cartObservable = new Observable<ProductI[]>();
+  cartItems:ProductI[]=[];
   showSuccess: boolean;
 
-  constructor(private compraService:CompraService) { }
+  constructor(private compraService:CompraService,private authService:AuthService) { }
 
   ngOnInit(): void {
-   this.cartItems= this.compraService.getCartProducts() ;
-   this.initConfig();
+    this.initConfig();
+    this.authService.userData.subscribe(data=>{
+      this.cartItems=data.cart.products;
+    })
 
 
   }
@@ -118,7 +121,7 @@ export class CartComponent implements OnInit {
 
 
   deleteItem(pos :number){
-    let ids:number[]=JSON.parse(localStorage.getItem("cart"+JSON.parse(localStorage.getItem("user_data")).id));
+    let ids:number[]=JSON.parse(localStorage.getItem("cart"));
     let newIds=[]
     let newSet=new Set(ids);
 
