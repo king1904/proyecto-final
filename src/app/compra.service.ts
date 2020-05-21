@@ -20,7 +20,7 @@ comprasId:number[]=[];
 
 cartItemsSubject = new BehaviorSubject<number>(0);
 
-AUTH_SERVER:string="http://localhost:8080/backend/service";
+AUTH_SERVER:string="https://tienda-backend.herokuapp.com/backend/service";
 
 
   constructor(private http: HttpClient) {

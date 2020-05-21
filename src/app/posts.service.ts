@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 export class PostsService {
 
   postsSubject$ = new BehaviorSubject<any[]>([]);
-  url:string="http://localhost:8080/backend/service";
+  url:string="https://tienda-backend.herokuapp.com/backend/service";
 
   constructor(private http:HttpClient,private route: ActivatedRoute) {
 

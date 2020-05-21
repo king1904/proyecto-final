@@ -19,7 +19,7 @@ export class AuthService {
 
   returnUrl: string;
 
-  AUTH_SERVER: string = 'http://localhost:8080/backend/service';
+  AUTH_SERVER: string = 'https://tienda-backend.herokuapp.com/backend/service';
 
   public currentUser: Observable<UserI>;
 
