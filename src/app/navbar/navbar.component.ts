@@ -36,11 +36,20 @@ export class NavbarComponent implements OnInit {
       }
     });
 
-    this.authService.userData.subscribe((data) => {
-      this.cartItems$ = data.cart.products.length;
+
+
+    this.compraService.cartItemsSubject.subscribe((data) => {
+     if( data == 0){
+      this.compraService.getCartById(JSON.parse(
+        localStorage.getItem('user_data')
+      ).cart.id).subscribe(data=>{
+        this.cartItems$=data.products.length
+      });
+
+     }else  (this.cartItems$ = data);
     });
 
-
+    console.log(this.cartItems$);
   }
 
   onLogout() {

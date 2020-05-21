@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 export class PostsService {
 
   postsSubject$ = new BehaviorSubject<any[]>([]);
+  url:string="http://localhost:8080/backend/service";
 
   constructor(private http:HttpClient,private route: ActivatedRoute) {
 
@@ -18,28 +19,28 @@ export class PostsService {
 
   getPostsByProductId(id:number):Observable<Post[]>{
 
-    return this.http.get<Post[]>("http://localhost:8080/posts/"+id);
+    return this.http.get<Post[]>(this.url+"/posts/"+id);
   }
 
   addPostToProduct(post){
 
-    return this.http.post<any>("http://localhost:8080/posts",post);
+    return this.http.post<any>(this.url+"/posts",post);
   }
 
   addLikeToPost(post){
 
-    return this.http.patch<any>("http://localhost:8080/posts",post);
+    return this.http.patch<any>(this.url+"/posts",post);
   }
 
 
 
 
   getMessages(){
-    return this.http.get("http://localhost:8080/message/");
+    return this.http.get(this.url+"/message/");
   }
 
   postMessage(message){
-    return this.http.post("http://localhost:8080/message/",message);
+    return this.http.post(this.url+"/message/",message);
   }
 
 

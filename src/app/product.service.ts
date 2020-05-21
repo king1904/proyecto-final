@@ -1,32 +1,33 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Product } from './product.interface';
 import { Observable, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
+import { ProductI } from './models/product';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
+  url:string="http://localhost:8080//backend/service";
   constructor(private http:HttpClient) { }
 
   getProducts(){
 
-    return this.http.get("http://localhost:8080/productos");
+    return this.http.get(this.url+"/productos");
   }
 
   getProductsPc(){
 
-    return this.http.get("http://localhost:8080/productos/categoria/pc");
+    return this.http.get(this.url+"/productos/categoria/pc");
   }
   getProductsLaptop(){
 
-    return this.http.get("http://localhost:8080/productos/categoria/laptop");
+    return this.http.get(this.url+"/productos/categoria/laptop");
   }
   getProductsMobile(){
 
-    return this.http.get("http://localhost:8080/productos/categoria/mobile");
+    return this.http.get(this.url+"/productos/categoria/mobile");
   }
 
 
@@ -35,20 +36,20 @@ export class ProductService {
 
   getProductById(id:number){
 
-    return this.http.get<Product>("http://localhost:8080/productos/"+id);
+    return this.http.get<ProductI>(this.url+"/productos/"+id);
   }
 
 
-  searchHeroes(term: string): Observable<Product[]> {
+  searchHeroes(term: string): Observable<ProductI[]> {
     if (!term.trim()) {
       // if not search term, return empty hero array.
       return of([]);
     }
-    return this.http.get<Product[]>(`http://localhost:8080/productos/?nombre=${term}`).pipe(
+    return this.http.get<ProductI[]>(`${this.url}/productos/?nombre=${term}`).pipe(
       tap(x => x.length ?
          this.log(`found heroes matching "${term}"`) :
          this.log(`no heroes matching "${term}"`)),
-      catchError(this.handleError<Product[]>('searchHeroes', []))
+      catchError(this.handleError<ProductI[]>('searchHeroes', []))
     );
   }
 

@@ -2,8 +2,9 @@ import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/cor
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ProductService } from 'src/app/product.service';
-import { Product } from 'src/app/product.interface';
-import { CompraService } from 'src/app/compra.service';
+ import { CompraService } from 'src/app/compra.service';
+import { AuthService } from 'src/app/auth.service';
+import { ProductI } from 'src/app/models/product';
 
 @Component({
   selector: 'app-product-details',
@@ -16,13 +17,14 @@ export class ProductDetailsComponent implements OnInit , OnDestroy{
   private productSub: Subscription;
 
 
+loggedIn:boolean=false;
 
   cartItems=0;
   private productId:number;
-  public productoActual:Product;
+  public productoActual:ProductI;
 
   constructor(private route: ActivatedRoute,private productService:ProductService,
-    private compraService:CompraService) {}
+    private compraService:CompraService,private authService:AuthService) {}
 
 
   ngOnInit(): void {
@@ -33,6 +35,9 @@ export class ProductDetailsComponent implements OnInit , OnDestroy{
 
     this.getProductById(this.productId) //log the entire params object
 
+    this.authService.loggedIn$.subscribe(data=>{
+      this.loggedIn=data;
+    })
   }
 
   ngOnDestroy(): void {
@@ -41,24 +46,46 @@ export class ProductDetailsComponent implements OnInit , OnDestroy{
    }
 
   getProductById(id:number){
-    this.productSub= this.productService.getProductById(id).subscribe((data:Product) =>{
+    this.productSub= this.productService.getProductById(id).subscribe((data:ProductI) =>{
       console.log(data)
-      this.productoActual=data
+      this.productoActual=data;
     })
 
   }
 
   addToCart(){
-    this.compraService.addCart(this.productoActual.id);
+    this.compraService.addCart(this.productoActual.id).subscribe((data : any)=>{
 
-    this.cartItems++;
-    let ids:number[]=JSON.parse(localStorage.getItem("cart"+JSON.parse(localStorage.getItem("user_data")).id));
-    let idSet=new Set(ids);
+      this.compraService.cartItemsSubject.next(data.products.length);
 
-    this.compraService.cartItemsSubject.next(idSet.size)
+       console.log(data)
+    })
+
+
+
 
 
 
   }
+
+ /*  addToCart(){
+    this.compraService.addCart(this.productoActual.id).subscribe((data : any)=>{
+      this.cartItems=data.products.length;
+    })
+
+    this.cartItems++;
+    let ids:number[]=[];
+
+    JSON.parse(localStorage.getItem("cart")).array.forEach(element => {
+      ids.push(element.id);
+    });
+
+    let idSet=new Set(ids);
+
+    this.compraService.cartItemsSubject.next(idSet.size);
+
+
+
+  } */
 
 }

@@ -19,7 +19,7 @@ export class AuthService {
 
   returnUrl: string;
 
-  AUTH_SERVER: string = 'http://localhost:8080';
+  AUTH_SERVER: string = 'http://localhost:8080/backend/service';
 
   public currentUser: Observable<UserI>;
 
@@ -50,7 +50,7 @@ export class AuthService {
         : false;
   }
 
-  register(user: UserI) {
+  register(user) {
     return this.http.post(this.AUTH_SERVER + '/register', user);
   }
 
@@ -80,6 +80,7 @@ export class AuthService {
         (res) => {
           localStorage.setItem('token', res.jwt);
           localStorage.setItem('user_data', JSON.stringify(res.usuario));
+          localStorage.setItem("cart",JSON.stringify(res.usuario.cart));
 
           this.loggedIn$.next(true);
           this.userData.next(JSON.parse(localStorage.getItem('user_data')));

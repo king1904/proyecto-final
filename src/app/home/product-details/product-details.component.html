@@ -6,7 +6,7 @@
   <!-- product -->
   <div class="product-content product-wrap clearfix product-deatil">
     <div class="row">
-      <div class="col-md-5 col-sm-12 col-xs-12 "  >
+      <div class="col-md-5 col-sm-12 col-xs-12 ">
         <div class="product-image" *ngIf="productoActual">
 
 
@@ -66,7 +66,13 @@
 
           <div class="col-sm-12 col-md-6 col-lg-6">
             <br>
-            <a class="btn btn-success btn-lg" (click)="addToCart()">Add to cart </a>
+
+            <div *ngIf="loggedIn;then add else login"> </div>
+            <ng-template #add><a class="btn btn-success btn-lg" (click)='addToCart()'>Add to cart </a>
+            </ng-template>
+            <ng-template #login><a class="btn btn-success btn-lg" routerLink="/login">Add to cart </a>
+            </ng-template>
+
           </div>
         </h3>
         <div class="certified">
