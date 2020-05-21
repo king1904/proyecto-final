@@ -9,7 +9,7 @@ import { ProductI } from './models/product';
 })
 export class ProductService {
 
-  url:string="http://localhost:8080//backend/service";
+  url:string="http://localhost:8080/backend/service";
   constructor(private http:HttpClient) { }
 
   getProducts(){

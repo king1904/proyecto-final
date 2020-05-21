@@ -6,7 +6,7 @@ import {
    debounceTime, distinctUntilChanged, switchMap
  } from 'rxjs/operators';
 import { ProductService } from 'src/app/product.service';
-import { Product } from 'src/app/product.interface';
+import { ProductI } from 'src/app/models/product';
 
 @Component({
   selector: 'app-search',
@@ -17,7 +17,7 @@ export class SearchComponent implements OnInit {
 
   constructor(private productService:ProductService) { }
 
-  products$: Observable<Product[]>;
+  products$: Observable<ProductI[]>;
   private searchTerms = new Subject<string>();
   ngOnInit(): void {
 
