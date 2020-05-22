@@ -8,8 +8,8 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class WebSocketService {
   messagesSubject$=new BehaviorSubject<any>({});
-     // webSocketEndPoint: string = 'https://tienda-pc.herokuapp.com/backend/service/webchat';
-      webSocketEndPoint: string = 'http://localhost:8080/backend/service/webchat';
+      webSocketEndPoint: string = 'https://tienda-pc.herokuapp.com/backend/service/webchat';
+     // webSocketEndPoint: string = 'http://localhost:8080/backend/service/webchat';
 
   topic: string = "/topic/public";
   stompClient: any;
