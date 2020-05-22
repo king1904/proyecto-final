@@ -33,6 +33,32 @@ import { MobileComponent } from './home/category/mobile/mobile.component';
 import { ChatComponent } from './home/chat/chat.component';
 
 
+import { CovalentLayoutModule } from '@covalent/core/layout';
+import { CovalentStepsModule  } from '@covalent/core/steps';
+import { CovalentHttpModule } from '@covalent/http';
+import { CovalentHighlightModule } from '@covalent/highlight';
+import { CovalentMarkdownModule } from '@covalent/markdown';
+import { CovalentDynamicFormsModule } from '@covalent/dynamic-forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+
+
+import { MatCarouselModule } from '@ngmodule/material-carousel';
+import { MainNavComponent } from './main-nav/main-nav.component';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { CovalentNotificationsModule } from '@covalent/core/notifications';
+import { OverlayModule} from '@angular/cdk/overlay';
+
+import { CovalentSearchModule } from '@covalent/core/search';
+import { DatePipe } from '@angular/common';
 
 
 @NgModule({
@@ -58,6 +84,7 @@ import { ChatComponent } from './home/chat/chat.component';
     LaptopComponent,
     MobileComponent,
     ChatComponent,
+    MainNavComponent,
 
   ],
   imports: [
@@ -69,12 +96,32 @@ import { ChatComponent } from './home/chat/chat.component';
     FormsModule,
     AuthModule,
     ReactiveFormsModule,
-    NgxPayPalModule
+    NgxPayPalModule,
+    CovalentLayoutModule,
+    CovalentStepsModule,
+    CovalentHttpModule.forRoot(),
+    CovalentHighlightModule,
+    CovalentMarkdownModule,
+    CovalentDynamicFormsModule,
+    BrowserAnimationsModule,
+    MatCarouselModule.forRoot(),
+    MatIconModule,
+    MatListModule,
+    MatMenuModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    CovalentSearchModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
+    CovalentNotificationsModule,
+    OverlayModule
 
 
 
   ],
-  providers: [AuthService],
+  providers: [AuthService,DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -6,13 +6,17 @@ import { Post } from 'src/app/models/post';
 import { AuthService } from 'src/app/auth.service';
 import { BehaviorSubject } from 'rxjs';
 import { ProductService } from 'src/app/product.service';
+import {tdBounceAnimation} from '@covalent/core/common';
 
 @Component({
+  animations:[tdBounceAnimation],
   selector: 'app-posts',
   templateUrl: './posts.component.html',
   styleUrls: ['./posts.component.css'],
 })
 export class PostsComponent implements OnInit {
+  bounceState: boolean []=[];
+
   posts: Post[];
   p: number = 1;
   replay$ = new BehaviorSubject<boolean>(false);
@@ -38,11 +42,17 @@ export class PostsComponent implements OnInit {
   constructor(
     private postsService: PostsService,
     private route: ActivatedRoute,
-    private productService: ProductService
+    private productService: ProductService,
+    private authService:AuthService
   ) {}
 
   async ngOnInit() {
    await this.getPosts();
+
+   this.posts.forEach(post=>{
+    this.bounceState.push(false);
+    })
+
   }
 
   async getPosts() {
@@ -65,7 +75,8 @@ export class PostsComponent implements OnInit {
   onPost() {
     if (this.postForm.value.text.trim() != '') {
       let post = this.postForm.value;
-      let user_id = JSON.parse(localStorage.getItem('user_data')).id;
+     // let user_id = JSON.parse(localStorage.getItem('user_data')).id;
+      let user_id= this.authService.userData.value.id;
       post['user_id'] = user_id;
 
       this.postsService.addPostToProduct(post).subscribe(
@@ -126,5 +137,10 @@ export class PostsComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+  onBounce(pos:number){
+//this.bounceState=!this.bounceState;
+return this.bounceState[pos];
   }
 }

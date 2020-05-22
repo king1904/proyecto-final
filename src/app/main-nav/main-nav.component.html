@@ -1,0 +1,85 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+    <mat-toolbar>Menu</mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item href="#">Link 1</a>
+      <a mat-list-item href="#">Link 2</a>
+      <a mat-list-item href="#">Link 3</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+
+    <mat-toolbar color="primary">
+      <mat-toolbar-row class="navbar-hamb">
+
+
+        <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+          *ngIf="isHandset$ | async">
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+      </mat-toolbar-row>
+
+
+
+      <mat-toolbar-row class="navbar-top">
+
+        <button mat-button [routerLink]="['/home']">Logo</button>
+        <button mat-button [routerLink]="['/home']">Home</button>
+
+
+        <button mat-button [matMenuTriggerFor]="productosMenu">Productos <mat-icon>arrow_drop_down</mat-icon></button>
+        <mat-menu #productosMenu="matMenu" xPosition="after">
+          <a class="dropdown-item" [routerLink]="['/category/pc']">Sobremesa</a>
+          <a class="dropdown-item" [routerLink]="['/category/laptop']">Portatil</a>
+          <a class="dropdown-item" [routerLink]="['/category/mobile']">Móvil</a>
+        </mat-menu>
+
+        <button mat-button [routerLink]="['/login']" *ngIf="logged==false"><i class="fas fa-sign-in-alt"></i> Login
+        </button>
+        <button mat-button [routerLink]="['/register']" *ngIf="logged==false"><i class="fas fa-user-plus"></i>
+          Register</button>
+        <button mat-button [routerLink]="['/contact']"><i class="fas fa-envelope-open-text"></i> Contact Us</button>
+
+        <span class="spacer"></span>
+
+        <button mat-button [matMenuTriggerFor]="settingsMenu">{{userName}} <mat-icon>arrow_drop_down</mat-icon></button>
+        <mat-menu #settingsMenu="matMenu" xPosition="before">
+          <a class="dropdown-item" [routerLink]="['/profile']"><i class="fas fa-user-alt"></i> My profile</a>
+          <a class="dropdown-item" [routerLink]="['/chat']" *ngIf="logged==true"><i class="fas fa-sms"></i> Chat</a>
+          <a class="dropdown-item" [routerLink]="['/compras']"><i class="fas fa-shopping-bag"></i>Mis Compras</a>
+          <a class="dropdown-item" [routerLink]="['/admin/addProduct']" *ngIf="isAdmin==true"><i
+              class="fas fa-cart-plus"></i> Añadir Producto</a>
+          <a class="dropdown-item" [routerLink]="['/admin/messages']" *ngIf="isAdmin==true"><i
+              class="fas fa-envelope"></i> Leer mensajes</a>
+          <a class="dropdown-item" [routerLink]="['/admin/users']" *ngIf="isAdmin==true"><i class="fas fa-users"></i>App
+            Users</a>
+
+          <a class="dropdown-item" (click)="onLogout()" *ngIf="logged==true"><i class="fas fa-sign-out-alt"></i>
+            Logout</a>
+
+        </mat-menu>
+
+        <button mat-button [matMenuTriggerFor]="themeMenu">
+          <mat-icon role="img" class="mat-icon notranslate material-icons mat-icon-no-color" aria-hidden="true">
+            format_color_fill</mat-icon>
+        </button>
+        <mat-menu #themeMenu="matMenu" xPosition="after">
+          <a type="button" class="dropdown-item" color="primary" (click)="onSetTheme('default-theme')">Default</a>
+          <a type="button" class="dropdown-item" color="primary" (click)="onSetTheme('dark-theme')">Dark</a>
+          <a type="button" class="dropdown-item" color="primary" (click)="onSetTheme('light-theme')">Light</a>
+        </mat-menu>
+
+
+        <a class="nav-link " [routerLink]="['/cart']"> <i class="fa" style="font-size:24px">&#xf07a;</i>
+          <span class='badge badge-warning' id='lblCartCount' *ngIf="logged==true"> {{ cartItems$}} </span>
+        </a>
+
+      </mat-toolbar-row>
+
+    </mat-toolbar>
+
+    <ng-content></ng-content>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

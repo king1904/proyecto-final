@@ -5,6 +5,7 @@ import { ProductService } from 'src/app/product.service';
  import { CompraService } from 'src/app/compra.service';
 import { AuthService } from 'src/app/auth.service';
 import { ProductI } from 'src/app/models/product';
+import { MatCarousel, MatCarouselComponent } from '@ngmodule/material-carousel';
 
 @Component({
   selector: 'app-product-details',

@@ -23,3 +23,7 @@
 .replyStyle{
   background-color: darkgray;
 }
+
+.btn-danger{
+  background-color: red;
+}

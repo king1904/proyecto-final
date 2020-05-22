@@ -65,3 +65,7 @@
 .shopping-cart {
   margin-top: 20px;
 }
+
+mat-form-field {
+  margin-right: 12px;
+}

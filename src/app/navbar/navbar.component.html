@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" [routerLink]="['/home']">Logo</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -56,3 +56,43 @@
     </ul>
   </div>
 </nav>
+ -->
+
+ <td-layout class='layout-nav-demo' sidenavWidth='280px'>
+  <td-navigation-drawer flex sidenavTitle="Covalent" logo="teradata-dark" name="Firstname Lastname" email="firstname.lastname@company.com">
+    <mat-nav-list>
+
+      <a mat-list-item [routerLink]="['/home']"><mat-icon>home</mat-icon>Home</a>
+      <a mat-list-item  >
+        <a class="nav-link dropdown-toggle float-right" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Productos
+         </a>
+
+         <div class="dropdown-menu " aria-labelledby="navbarDropdownMenuLink">
+           <a class="dropdown-item" [routerLink]="['/category/pc']">Sobremesa</a>
+           <a class="dropdown-item" [routerLink]="['/category/laptop']">Portatil</a>
+           <a class="dropdown-item" [routerLink]="['/category/mobile']">Móvil</a>
+         </div>
+      </a>
+
+
+
+
+
+      <a mat-list-item tdLayoutToggle><mat-icon>close</mat-icon>Close Drawer</a>
+    </mat-nav-list>
+    <div td-navigation-drawer-menu>
+      <mat-nav-list>
+        <a mat-list-item><mat-icon>account_box</mat-icon>Profile</a>
+      </mat-nav-list>
+    </div>
+  </td-navigation-drawer>
+  <td-layout-nav logo="assets:teradata" toolbarTitle="Covalent" navigationRoute="/">
+    <button mat-icon-button td-menu-button tdLayoutToggle>
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <ng-content></ng-content>
+
+  </td-layout-nav>
+ </td-layout>

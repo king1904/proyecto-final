@@ -9,7 +9,9 @@ import { ProductI } from './models/product';
 })
 export class ProductService {
 
-  url:string="https://tienda-backend.herokuapp.com/backend/service";
+  //url:string="https://tienda-pc.herokuapp.com/backend/service";
+  url:string="http://localhost:8080/backend/service";
+
   constructor(private http:HttpClient) { }
 
   getProducts(){

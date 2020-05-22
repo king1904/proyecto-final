@@ -3,11 +3,11 @@ import { AuthService } from '../auth.service';
 import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 import { CompraService } from '../compra.service';
 import { BehaviorSubject } from 'rxjs';
-
+import { CovalentLayoutModule } from '@covalent/core/layout';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css'],
+  styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit {
   logged: boolean;
@@ -38,7 +38,7 @@ export class NavbarComponent implements OnInit {
 
 
 
-    this.compraService.cartItemsSubject.subscribe((data) => {
+  if(this.logged)  this.compraService.cartItemsSubject.subscribe((data) => {
      if( data == 0){
       this.compraService.getCartById(JSON.parse(
         localStorage.getItem('user_data')

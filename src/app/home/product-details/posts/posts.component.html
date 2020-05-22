@@ -60,80 +60,94 @@
 
 
 
-           <div class="container">
+<div class="container">
 
-            <form class="well padding-bottom-10 " [formGroup]="postForm" (ngSubmit)="onPost()"  >
-              <textarea rows="2" class="form-control" placeholder="Write a review" formControlName="text" minlength="5" required></textarea>
-              <div class="margin-top-10">
-                <button type="submit" class="btn btn-sm btn-primary pull-right">
-                  Submit Comment
-                </button>
+  <form class="well padding-bottom-10 " [formGroup]="postForm" (ngSubmit)="onPost()">
+    <textarea rows="2" class="form-control" placeholder="Write a review" formControlName="text" minlength="5"
+      required></textarea>
+    <div class="margin-top-10">
+      <button type="submit" class="btn btn-sm btn-primary pull-right">
+        Submit Comment
+      </button>
 
-              </div>
-            </form>
+    </div>
+  </form>
 
-            <div class="card"   >
-                <div class="card-body" *ngFor="let post of posts |paginate: { itemsPerPage: 10, currentPage: p } ,let i=index"   >
-                    <div class="row"  >
-                        <div class="col-md-2" >
-                            <img src="{{post.user.userDetails.img.name}}" class="img img-rounded img-fluid rounded-circle z-depth-2"/>
-                            <p class="text-secondary text-center">{{post.date|date}}</p>
-                        </div>
-                        <div class="col-md-10">
-                            <p>
-                                <a class="float-left" ><strong>{{post.user.username}}</strong></a>
-                                <span class="float-right"><i class="text-warning fa fa-star"></i></span>
-                                  <span class="float-right"><i class="text-warning fa fa-star"></i></span>
-                                <span class="float-right"><i class="text-warning fa fa-star"></i></span>
-                                <span class="float-right"><i class="text-warning fa fa-star"></i></span>
+  <div class="card">
+    <div class="card-body" *ngFor="let post of posts |paginate: { itemsPerPage: 10, currentPage: p } ,let i=index">
+      <div class="row">
+        <div class="col-md-2">
+          <img src="{{post.user.userDetails.img.name}}" class="img img-rounded img-fluid rounded-circle z-depth-2"
+            *ngIf="post.user.userDetails" />
+          <p class="text-secondary text-center">{{post.date|date}}</p>
+        </div>
+        <div class="col-md-10">
+          <p>
+            <a class="float-left"><strong>{{post.user.username}}</strong></a>
+            <span class="float-right"><i class="text-warning fa fa-star"></i></span>
+            <span class="float-right"><i class="text-warning fa fa-star"></i></span>
+            <span class="float-right"><i class="text-warning fa fa-star"></i></span>
+            <span class="float-right"><i class="text-warning fa fa-star"></i></span>
 
-                           </p>
-                           <div class="clearfix"></div>
-                            <p>{{post.text}}</p>
-                            <div>
-                                <a  class="float-right btn btn-outline-primary ml-2" data-toggle="collapse" href="#replyForm{{i}}"  role="button"> <i class="fa fa-reply"></i> Reply</a>
+          </p>
+          <div class="clearfix"></div>
+          <p>{{post.text}}</p>
+          <div>
+            <a class="float-right btn btn-outline-primary ml-2" data-toggle="collapse" href="#replyForm{{i}}"
+              role="button"> <i class="fa fa-reply"></i> Reply</a>
 
 
-                                  <button  class="float-right btn text-white btn-danger" (click)="onLike(post.id,post.likes,i)"> <i class="fa fa-heart"></i> ({{post.likes}}) Likes</button>
+            <div   (click)="bounceState[i]=!this.bounceState[i]" color="accent">
+            <button mat-raised-button [@tdBounce]="onBounce(i)"
+              class="float-right btn text-white btn-danger" (click)="onLike(post.id,post.likes,i)">
+              <i class="fa fa-heart"></i>
+              ({{post.likes}}) Likes
+            </button>
+          </div>
 
+          </div>
+        </div>
+      </div>
+      <a class="btn btn-primary " data-toggle="collapse" href="#replySection{{i}}" role="button" aria-expanded="false"
+        aria-controls="multiCollapseExample1" [class.disabled]="!post.replays.length"><span *ngIf="post.replays">
+          ({{post.replays.length}})</span> Comentarios</a>
+      <br>
+      <br>
+      <form class="well padding-bottom-10 collapse " id="replyForm{{i}}" [formGroup]="replyForm"
+        (ngSubmit)="onReplyPost(i)">
+        <textarea rows="2" class="form-control" placeholder="Write a review" formControlName="text" minlength="5"
+          required></textarea>
+        <div class="margin-top-10">
+          <button type="submit" class="btn btn-sm btn-primary pull-right">
+            Submit Comment
+          </button>
+        </div>
+      </form>
+      <br>
+      <div class="card card-inner collapse multi-collapse replyStyle" id="replySection{{i}}" *ngIf="post.replays">
+        <div class="card-body" *ngFor="let replay of post.replays,let j=index">
+          <div class="row">
+            <div class="col-md-2">
+              <img src="{{replay.user.userDetails.img.name}}"
+                class="img img-rounded img-fluid  rounded-circle z-depth-2" *ngIf="replay.user.userDetails" />
+              <p class="text-secondary text-center">{{replay.date|date}}</p>
+            </div>
+            <div class="col-md-10">
+              <p><a><strong>{{replay.user.username}}</strong></a></p>
+              <p>{{replay.text}}</p>
+              <p>
+                <button class="float-right btn text-white btn-danger" (click)="onLike(replay.id,replay.likes,i,j)"> <i
+                    class="fa fa-heart"></i> ({{replay.likes}}) Likes</button>
 
-                               </div>
-                        </div>
-                    </div>
-                    <a class="btn btn-primary " data-toggle="collapse" href="#replySection{{i}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample1" [class.disabled]="!post.replays.length"><span *ngIf="post.replays"> ({{post.replays.length}})</span> Comentarios</a>
-                    <br>
-                    <br>
-                    <form class="well padding-bottom-10 collapse " id="replyForm{{i}}"  [formGroup]="replyForm" (ngSubmit)="onReplyPost(i)"  >
-                      <textarea rows="2" class="form-control" placeholder="Write a review" formControlName="text" minlength="5" required></textarea>
-                      <div class="margin-top-10">
-                        <button type="submit" class="btn btn-sm btn-primary pull-right">
-                          Submit Comment
-                        </button>
-
-                      </div>
-                    </form>
-                    <br>
-                     <div class="card card-inner collapse multi-collapse replyStyle" id="replySection{{i}}" *ngIf="post.replays">
-                            <div class="card-body" *ngFor="let replay of post.replays,let j=index">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <img src="{{replay.user.userDetails.img.name}}" class="img img-rounded img-fluid  rounded-circle z-depth-2"/>
-                                        <p class="text-secondary text-center">{{replay.date|date}}</p>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <p><a ><strong>{{replay.user.username}}</strong></a></p>
-                                        <p>{{replay.text}}</p>
-                                        <p>
-                                              <button  class="float-right btn text-white btn-danger" (click)="onLike(replay.id,replay.likes,i,j)"> <i class="fa fa-heart"></i> ({{replay.likes}}) Likes</button>
-
-                                       </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <br>
-                        </div>
-                </div>
-                <br>
-                <pagination-controls class="d-flex justify-content-center"  (pageChange)="p = $event" *ngIf="posts.length>10"></pagination-controls>
+              </p>
             </div>
           </div>
+        </div>
+        <br>
+      </div>
+    </div>
+    <br>
+    <pagination-controls class="d-flex justify-content-center" (pageChange)="p = $event" *ngIf="posts.length>10">
+    </pagination-controls>
+  </div>
+</div>

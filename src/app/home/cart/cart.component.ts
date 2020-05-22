@@ -20,8 +20,8 @@ export class CartComponent implements OnInit {
 
   constructor(
     private compraService: CompraService,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+   ) {}
 
   ngOnInit(): void {
     this.initConfig();
@@ -35,6 +35,8 @@ export class CartComponent implements OnInit {
         this.cartItems = data.products;
       });
   }
+
+
 
   private initConfig(): void {
     this.payPalConfig = {
@@ -141,6 +143,7 @@ export class CartComponent implements OnInit {
       this.compraService.cartItemsSubject.next(data.products.length);
       this.cartItems=data.products;
     });
+
   }
 
 

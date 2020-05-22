@@ -32,9 +32,7 @@ export class ProfileComponent implements OnInit {
       JSON.parse(localStorage.getItem('user_data')).username
     ),
     email: new FormControl(JSON.parse(localStorage.getItem('user_data')).email),
-    password: new FormControl(
-      JSON.parse(localStorage.getItem('user_data')).password
-    ),
+    password: new FormControl(""),
   });
 
   constructor(private authService: AuthService) {}
@@ -44,7 +42,7 @@ export class ProfileComponent implements OnInit {
     this.authService
       .getUserById(JSON.parse(localStorage.getItem('user_data')).id)
       .subscribe((data) => {
-         this.user = data;
+        this.user = data;
         console.log(data);
       });
 
@@ -54,6 +52,12 @@ export class ProfileComponent implements OnInit {
 
   onSubmit() {
     let user: UserI = this.authService.userData.value;
+
+    let pass;
+    this.updateForm.value.password.trim() == ''
+      ? (pass = JSON.parse(localStorage.getItem('user_data')).password)
+      : (pass = this.updateForm.value.password);
+
 
     let userSent = {
       id: JSON.parse(localStorage.getItem('user_data')).id,
@@ -75,7 +79,7 @@ export class ProfileComponent implements OnInit {
       },
       email: this.updateForm.value.email,
 
-      password: this.updateForm.value.password,
+      password: pass,
     };
 
     console.log(JSON.stringify(userSent));
@@ -85,7 +89,7 @@ export class ProfileComponent implements OnInit {
         console.log(res);
 
         //localStorage.removeItem("user_data");
-    localStorage.setItem('user_data', JSON.stringify(res));
+        localStorage.setItem('user_data', JSON.stringify(res));
       },
       (error) => {
         console.log(error);

@@ -11,6 +11,7 @@ import {
 import { WebSocketService } from 'src/app/services/web-socket.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-chat',
@@ -23,22 +24,20 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   @ViewChild('ul') ul: ElementRef;
 
-  message;
-  messagePrueba="Hola";
+  contador = 0;
   name: string;
   content: string = '';
   leftRight: boolean = false;
 
   postForm = new FormGroup({
-    user: new FormControl(JSON.parse(localStorage.getItem('user_data'))),
     content: new FormControl(''),
-    date: new FormControl(Date.now())
+    date: new FormControl(Date.now()),
   });
   constructor(
     private webSocketAPI: WebSocketService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private datePipe: DatePipe
   ) {}
-
 
   ngOnDestroy(): void {
     this.disconnect();
@@ -47,50 +46,58 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.connect();
 
-    this.webSocketAPI.messagesSubject$.subscribe(data=>{
-     this.message= data;
-     setTimeout(()=>
-    {if(data!=undefined) this.drawComment(data);},400)
-  //this.drawComment(data);
-     })
+    this.webSocketAPI.messagesSubject$.subscribe((data) => {
 
+        if (this.contador!=0) this.drawComment(data);
+
+      this.contador++;
+      //this.drawComment(data);
+    });
   }
 
   sendMessage() {
+    let user = JSON.parse(localStorage.getItem('user_data'));
 
-    this.webSocketAPI._send(this.postForm.value);
+    let sentMessage = {
+      username: user.username,
+      name: user.userDetails.name,
+      img: user.userDetails.img.name,
+      content: this.postForm.value.content,
+      date: this.postForm.value.date,
+    };
+
+    this.webSocketAPI._send(sentMessage);
 
     this.postForm.controls['content'].reset();
-
-
-
   }
 
-  drawComment(message){
+  drawComment(message) {
+    message.username == JSON.parse(localStorage.getItem('user_data')).username
+      ? (this.leftRight = false)
+      : (this.leftRight = true);
 
-        const li = this.renderer.createElement('li');
+    const li = this.renderer.createElement('li');
 
-        this.leftRight
-          ? this.renderer.setAttribute(li, 'class', 'message right appeared')
-          : this.renderer.setAttribute(li, 'class', 'message left appeared');
+    this.leftRight
+      ? this.renderer.setAttribute(li, 'class', 'message left appeared')
+      : this.renderer.setAttribute(li, 'class', 'message right appeared');
 
-
-        li.innerHTML = `
+    li.innerHTML = `
         <div class="post-heading">
-         <div   class="right"> <a  ><b> ${message.user.username}</b> </a></div>
-
-         <img class="avatar" name="pic" src="${message.user.img}" class="img img-rounded img-fluid rounded-circle z-depth-2"/>
-         <div   class="right"> <a  ><b> ${message.date}</b> </a></div>
-
+         <div   class="right"> <a  ><b> ${message.username}</b> </a></div>
+         <div class="col-md-2">
+         <img class="avatar" name="pic" src="${message.img}" class="img img-rounded img-fluid rounded-circle z-depth-2"  />
+         <p class="text-secondary text-center"><b> ${this.datePipe.transform(message.date, 'yyyy-MM-dd')}</b> </p>
+    </div>
          </div>
         <div class="text_wrapper">
           <div class="text">${message.content}</div>
         </div>
         `;
 
-        this.renderer.appendChild(this.ul.nativeElement, li);
 
-        this.leftRight = !this.leftRight;
+
+    this.renderer.appendChild(this.ul.nativeElement, li);
   }
 
   connect() {
@@ -100,6 +107,4 @@ export class ChatComponent implements OnInit, OnDestroy {
   disconnect() {
     this.webSocketAPI._disconnect();
   }
-
-
 }
