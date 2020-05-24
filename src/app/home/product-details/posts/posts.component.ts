@@ -1,28 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { PostsService } from 'src/app/posts.service';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Post } from 'src/app/models/post';
 import { AuthService } from 'src/app/auth.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ProductService } from 'src/app/product.service';
-import {tdBounceAnimation} from '@covalent/core/common';
+import { tdBounceAnimation } from '@covalent/core/common';
 
 @Component({
-  animations:[tdBounceAnimation],
+  animations: [tdBounceAnimation],
   selector: 'app-posts',
   templateUrl: './posts.component.html',
   styleUrls: ['./posts.component.css'],
 })
-export class PostsComponent implements OnInit {
-  bounceState: boolean []=[];
+export class PostsComponent implements OnInit  {
+  bounceState: boolean[] = [];
 
   posts: Post[];
+  posts$: Observable<Post[]>;
   p: number = 1;
   replay$ = new BehaviorSubject<boolean>(false);
 
   postForm = new FormGroup({
-    user_id: new FormControl(''),
+    user_id: JSON.parse(localStorage.getItem('user_data'))
+      ? new FormControl(+JSON.parse(localStorage.getItem('user_data')).id)
+      : new FormControl(''),
     replay_id: new FormControl(''),
 
     product_id: new FormControl(+this.route.snapshot.paramMap.get('id')),
@@ -31,7 +34,9 @@ export class PostsComponent implements OnInit {
   });
 
   replyForm = new FormGroup({
-    user_id: new FormControl(''),
+    user_id: JSON.parse(localStorage.getItem('user_data'))
+      ? new FormControl(+JSON.parse(localStorage.getItem('user_data')).id)
+      : new FormControl(''),
     replay_id: new FormControl(''),
 
     product_id: new FormControl(+this.route.snapshot.paramMap.get('id')),
@@ -43,47 +48,56 @@ export class PostsComponent implements OnInit {
     private postsService: PostsService,
     private route: ActivatedRoute,
     private productService: ProductService,
-    private authService:AuthService
+    private authService: AuthService
   ) {}
 
-  async ngOnInit() {
-   await this.getPosts();
 
-   this.posts.forEach(post=>{
-    this.bounceState.push(false);
-    })
+  ngOnInit() {
+
+    this.getPosts().subscribe(data=>{
+      this.posts=this.orderPosts( data);
+      console.log(data)
+    });
+
+
+    if (this.posts)
+      this.posts.forEach((post) => {
+        this.bounceState.push(false);
+      });
+
+    /*   this.getPosts().subscribe((data: any[]) => {
+    this.posts=data;
+    console.log(data);
+  }); */
 
   }
 
-  async getPosts() {
-    this.postsService
-      .getPostsByProductId(+this.route.snapshot.paramMap.get('id'))
-      .subscribe((data: any[]) => {
-        this.postsService.postsSubject$.next(data);
-        console.log(data);
-      });
-    this.postsService.postsSubject$.subscribe((data) => {
+  getPosts() {
+    return this.postsService.getPostsByProductId(
+      +this.route.snapshot.paramMap.get('id')
+    );
+  }
+  orderPosts(posts) {
 
-      this.posts = data.sort((a, b) => b.id - a.id);
-      data.forEach((post) => {
+      posts.sort((a, b) => b.id - a.id);
+      posts.forEach((post) => {
         if (post.replays.length != 0) post.replays.sort((a, b) => b.id - a.id);
       });
-
-    });
+   return posts;
   }
 
   onPost() {
+    console.log(this.postForm.value);
     if (this.postForm.value.text.trim() != '') {
       let post = this.postForm.value;
-     // let user_id = JSON.parse(localStorage.getItem('user_data')).id;
-      let user_id= this.authService.userData.value.id;
-      post['user_id'] = user_id;
 
-      this.postsService.addPostToProduct(post).subscribe(
+      this.postsService.addPostToProduct(this.postForm.value).subscribe(
         (res) => {
           this.postForm.controls['text'].reset();
 
-          this.getPosts();
+          this.getPosts().subscribe(data=>{
+            this.posts=this.orderPosts( data);
+          });
 
           console.log(res);
         },
@@ -97,17 +111,17 @@ export class PostsComponent implements OnInit {
   onReplyPost(index: number) {
     if (this.replyForm.value.text.trim() != '') {
       let post = this.replyForm.value;
-      let user_id = JSON.parse(localStorage.getItem('user_data')).id;
-      post['user_id'] = user_id;
+      //let user_id = JSON.parse(localStorage.getItem('user_data')).id;
+      //post['user_id'] = user_id;
       post['replay_id'] = this.posts[index].id;
 
       this.postsService.addPostToProduct(post).subscribe(
         (res) => {
           this.postForm.controls['text'].reset();
-          this.posts[index]['replays'].push(res);
-          this.posts[index]['replays'] = this.posts[index]['replays'].sort(
-            (a, b) => b.id - a.id
-          );
+
+          this.getPosts().subscribe(data=>{
+            this.posts=this.orderPosts( data);
+          });
 
           console.log(res);
         },
@@ -139,8 +153,8 @@ export class PostsComponent implements OnInit {
     );
   }
 
-  onBounce(pos:number){
-//this.bounceState=!this.bounceState;
-return this.bounceState[pos];
+  onBounce(pos: number) {
+    //this.bounceState=!this.bounceState;
+    return this.bounceState[pos];
   }
 }

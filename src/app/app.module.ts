@@ -56,6 +56,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { CovalentNotificationsModule } from '@covalent/core/notifications';
 import { OverlayModule} from '@angular/cdk/overlay';
+import { MatTreeModule } from '@angular/material/tree';
 
 import { CovalentSearchModule } from '@covalent/core/search';
 import { DatePipe } from '@angular/common';
@@ -116,7 +117,8 @@ import { DatePipe } from '@angular/common';
     MatFormFieldModule,
     MatAutocompleteModule,
     CovalentNotificationsModule,
-    OverlayModule
+    OverlayModule,
+    MatTreeModule
 
 
 

@@ -6,6 +6,71 @@ import { AuthService } from '../auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CompraService } from '../compra.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import {
+  MatTreeFlatDataSource,
+  MatTreeFlattener,
+  MatTreeNestedDataSource,
+} from '@angular/material/tree';
+import { FlatTreeControl, NestedTreeControl } from '@angular/cdk/tree';
+
+/**
+ * Food data with nested structure.
+ * Each node has a name and an optional list of children.
+ */
+interface FoodNode {
+  name: string;
+  url: string;
+  children?: FoodNode[];
+}
+
+const TREE_DATA: FoodNode[] = [
+  {
+    name: 'Productos',
+    children: [
+      { name: `Sobremesa`, url: 'category/pc' },
+      { name: 'Portatil', url: 'category/laptop' },
+      { name: 'Móvil', url: 'category/mobile' },
+    ],
+    url: '/',
+  },
+  {
+    name: 'Profile',
+    children: [
+      { name: `My Profile`, url: 'profile' },
+      { name: 'Chat', url: 'chat' },
+      { name: 'Mis Compras', url: 'compras' },
+      { name: 'Añadir Producto', url: 'admin/addProduct' },
+      { name: 'App Users', url: 'admin/users' },
+      { name: 'Leer Mensajes', url: 'admin/messages' },
+      { name: 'Logout', url: '' },
+
+    ],
+    url: '/',
+  },
+  {
+    name: 'Home',
+
+    url: 'home',
+  },
+  {
+    name: 'Register',
+
+    url: 'register',
+  },
+  {
+    name: 'Login',
+
+    url: 'login',
+  },
+
+];
+
+/** Flat node with expandable and level information */
+interface ExampleFlatNode {
+  expandable: boolean;
+  name: string;
+  level: number;
+}
 
 @Component({
   selector: 'app-main-nav',
@@ -26,6 +91,29 @@ export class MainNavComponent implements OnInit {
       shareReplay()
     );
 
+  private _transformer = (node: FoodNode, level: number) => {
+    return {
+      expandable: !!node.children && node.children.length > 0,
+      name: node.name,
+      url: node.url,
+      level: level,
+    };
+  };
+
+  treeControl = new FlatTreeControl<ExampleFlatNode>(
+    (node) => node.level,
+    (node) => node.expandable
+  );
+
+  treeFlattener = new MatTreeFlattener(
+    this._transformer,
+    (node) => node.level,
+    (node) => node.expandable,
+    (node) => node.children
+  );
+
+  dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
   constructor(
     private breakpointObserver: BreakpointObserver,
     private authService: AuthService,
@@ -33,13 +121,15 @@ export class MainNavComponent implements OnInit {
     private route: ActivatedRoute,
     private compraService: CompraService,
     public overlayContainer: OverlayContainer
-  ) {}
+  ) {
+    this.dataSource.data = TREE_DATA;
+  }
 
   @HostBinding('class') componentCssClass;
 
   ngOnInit(): void {
-
-    if(localStorage.getItem("app_theme")) this.onSetTheme(localStorage.getItem("app_theme"));
+    if (localStorage.getItem('app_theme'))
+      this.onSetTheme(localStorage.getItem('app_theme'));
 
     this.authService.isAdmin$.subscribe((data) => (this.isAdmin = data));
 
@@ -66,13 +156,13 @@ export class MainNavComponent implements OnInit {
 
     console.log(this.cartItems$);
   }
+  hasChild = (_: number, node: ExampleFlatNode) => node.expandable;
 
   onSetTheme(theme) {
     this.overlayContainer.getContainerElement().classList.add(theme);
     this.componentCssClass = theme;
-    localStorage.setItem("app_theme",theme);
+    localStorage.setItem('app_theme', theme);
   }
-
 
   onLogout() {
     this.authService.loggedIn$.next(false);

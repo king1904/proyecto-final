@@ -5,5 +5,6 @@ export interface Post{
 user:UserI;
 text:string;
 likes:number;
+date:string;
 }
 
