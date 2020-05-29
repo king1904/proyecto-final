@@ -1,12 +1,11 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { PostsService } from 'src/app/posts.service';
+import { Component, OnInit } from '@angular/core';
+import { PostsService } from 'src/app/shared/services/posts.service';
 import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Post } from 'src/app/models/post';
-import { AuthService } from 'src/app/auth.service';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { ProductService } from 'src/app/product.service';
-import { tdBounceAnimation } from '@covalent/core/common';
+ import { BehaviorSubject, Observable } from 'rxjs';
+ import { tdBounceAnimation } from '@covalent/core/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Post } from 'src/app/shared/backendModels/interfaces';
 
 @Component({
   animations: [tdBounceAnimation],
@@ -16,6 +15,8 @@ import { tdBounceAnimation } from '@covalent/core/common';
 })
 export class PostsComponent implements OnInit  {
   bounceState: boolean[] = [];
+  isLoading = true;
+  live=true;
 
   posts: Post[];
   posts$: Observable<Post[]>;
@@ -31,6 +32,7 @@ export class PostsComponent implements OnInit  {
     product_id: new FormControl(+this.route.snapshot.paramMap.get('id')),
     text: new FormControl(''),
     likes: new FormControl(0),
+    date:new FormControl('')
   });
 
   replyForm = new FormGroup({
@@ -42,13 +44,14 @@ export class PostsComponent implements OnInit  {
     product_id: new FormControl(+this.route.snapshot.paramMap.get('id')),
     text: new FormControl(''),
     likes: new FormControl(0),
+    date:new FormControl('')
+
   });
 
   constructor(
     private postsService: PostsService,
     private route: ActivatedRoute,
-    private productService: ProductService,
-    private authService: AuthService
+    public snackBar: MatSnackBar
   ) {}
 
 
@@ -56,19 +59,19 @@ export class PostsComponent implements OnInit  {
 
     this.getPosts().subscribe(data=>{
       this.posts=this.orderPosts( data);
-      console.log(data)
-    });
+      this.isLoading=false;
 
-
-    if (this.posts)
       this.posts.forEach((post) => {
         this.bounceState.push(false);
       });
 
-    /*   this.getPosts().subscribe((data: any[]) => {
-    this.posts=data;
-    console.log(data);
-  }); */
+      console.log(data)
+    });
+
+
+
+
+
 
   }
 
@@ -88,11 +91,20 @@ export class PostsComponent implements OnInit  {
 
   onPost() {
     console.log(this.postForm.value);
+    let time= new Date().getTime();
+    let fecha  = new Date(time);
+
+    this.postForm.value.date=fecha;
+
     if (this.postForm.value.text.trim() != '') {
-      let post = this.postForm.value;
 
       this.postsService.addPostToProduct(this.postForm.value).subscribe(
         (res) => {
+
+          this.snackBar.open('Has comentado con éxito!!!', 'OK', {
+            duration: 2000,
+          });
+
           this.postForm.controls['text'].reset();
 
           this.getPosts().subscribe(data=>{
@@ -102,6 +114,10 @@ export class PostsComponent implements OnInit  {
           console.log(res);
         },
         (error) => {
+
+          this.snackBar.open('Ha ocurrido un error!!!', 'OK', {
+            duration: 2000,
+          });
           console.log(error);
         }
       );
@@ -109,14 +125,23 @@ export class PostsComponent implements OnInit  {
   }
 
   onReplyPost(index: number) {
+
+    let time= new Date().getTime();
+    let fecha  = new Date(time);
+
+
     if (this.replyForm.value.text.trim() != '') {
       let post = this.replyForm.value;
       //let user_id = JSON.parse(localStorage.getItem('user_data')).id;
       //post['user_id'] = user_id;
       post['replay_id'] = this.posts[index].id;
-
+      post["date"]=fecha;
       this.postsService.addPostToProduct(post).subscribe(
         (res) => {
+          this.snackBar.open('Has comentado con éxito!!!', 'OK', {
+            duration: 2000,
+          });
+
           this.postForm.controls['text'].reset();
 
           this.getPosts().subscribe(data=>{
@@ -126,6 +151,10 @@ export class PostsComponent implements OnInit  {
           console.log(res);
         },
         (error) => {
+          this.snackBar.open('Ha ocurrido un error!!!', 'OK', {
+            duration: 2000,
+          });
+
           console.log(error);
         }
       );
@@ -142,12 +171,19 @@ export class PostsComponent implements OnInit  {
 
     this.postsService.addLikeToPost(post).subscribe(
       (res) => {
+        this.snackBar.open('Te ha gustado un comentario!!!', 'OK', {
+          duration: 2000,
+        });
+
         if (pos2 == null) this.posts[pos].likes = res.likes;
         else this.posts[pos]['replays'][pos2] = res;
 
         console.log(res);
       },
       (error) => {
+        this.snackBar.open('Ha ocurrido un error!!!', 'OK', {
+          duration: 2000,
+        });
         console.log(error);
       }
     );
@@ -157,4 +193,19 @@ export class PostsComponent implements OnInit  {
     //this.bounceState=!this.bounceState;
     return this.bounceState[pos];
   }
+
+  keyDownFunctionPost(event,message) {
+    if (event.keyCode === 13 && message!=null) {
+
+      this.onPost();
+    }
+  }
+
+  keyDownFunctionReply(event,id,message) {
+    if (event.keyCode === 13 && message!=null) {
+
+      this.onReplyPost(id);
+    }
+  }
+
 }

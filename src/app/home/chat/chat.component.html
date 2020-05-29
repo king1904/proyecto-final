@@ -23,7 +23,7 @@
   </ul>
 
 
-  <form [formGroup]="postForm">
+  <form [formGroup]="postForm" (keydown)="keyDownFunction($event,postForm.value.content)">
     <div class="bottom_wrapper clearfix">
       <div class="message_input_wrapper">
         <input class="message_input " formControlName="content" required placeholder="Type your message here..." />

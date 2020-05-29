@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/auth.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
 import { FormGroup, FormControl } from '@angular/forms';
-import { UserI } from 'src/app/models/user';
-import { Observable } from 'rxjs';
+import { UserI } from 'src/app/shared/backendModels/interfaces';
 
 @Component({
   selector: 'app-profile',

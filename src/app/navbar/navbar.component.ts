@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../shared/services/auth.service';
 import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
-import { CompraService } from '../compra.service';
+import { CompraService } from '../shared/services/compra.service';
 import { BehaviorSubject } from 'rxjs';
 import { CovalentLayoutModule } from '@covalent/core/layout';
 @Component({

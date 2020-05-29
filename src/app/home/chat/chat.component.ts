@@ -6,12 +6,14 @@ import {
   ElementRef,
   Renderer2,
   ViewEncapsulation,
-  OnChanges,
+
 } from '@angular/core';
-import { WebSocketService } from 'src/app/services/web-socket.service';
+import { WebSocketService } from 'src/app/shared/services/web-socket.service';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { DatePipe } from '@angular/common';
+ import { DatePipe } from '@angular/common';
+ import { TimeagoIntl, TimeagoPipe } from 'ngx-timeago';
+
+
 
 @Component({
   selector: 'app-chat',
@@ -24,20 +26,30 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   @ViewChild('ul') ul: ElementRef;
 
+
+  postedIn:any[];
   contador = 0;
+  live=true;
+  messageNumber=0;
   name: string;
   content: string = '';
   leftRight: boolean = false;
 
   postForm = new FormGroup({
     content: new FormControl(''),
-    date: new FormControl(Date.now()),
+    date: new FormControl(""),
   });
   constructor(
     private webSocketAPI: WebSocketService,
     private renderer: Renderer2,
-    private datePipe: DatePipe
-  ) {}
+    private datePipe: DatePipe,
+    private intl: TimeagoIntl,
+    private timeAgoPipe:TimeagoPipe
+
+  ) {
+    intl.changes.next();
+
+  }
 
   ngOnDestroy(): void {
     this.disconnect();
@@ -56,14 +68,17 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   sendMessage() {
+
     let user = JSON.parse(localStorage.getItem('user_data'));
+    let time= new Date().getTime();
+    let fecha  = new Date(time);
 
     let sentMessage = {
       username: user.username,
       name: user.userDetails.name,
       img: user.userDetails.img.name,
       content: this.postForm.value.content,
-      date: this.postForm.value.date,
+      date: fecha
     };
 
     this.webSocketAPI._send(sentMessage);
@@ -72,6 +87,10 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   drawComment(message) {
+
+
+
+
     message.username == JSON.parse(localStorage.getItem('user_data')).username
       ? (this.leftRight = false)
       : (this.leftRight = true);
@@ -87,7 +106,7 @@ export class ChatComponent implements OnInit, OnDestroy {
          <div   class="right"> <a  ><b> ${message.username}</b> </a></div>
          <div class="col-md-2">
          <img class="avatar" name="pic" src="${message.img}" class="img img-rounded img-fluid rounded-circle z-depth-2"  />
-         <p class="text-secondary text-center"><b> ${this.datePipe.transform(message.date, 'yyyy-MM-dd')}</b> </p>
+         <p class="text-secondary text-center"><b> ${ this.timeAgoPipe.transform( message.date,this.live)} </b> </p>
     </div>
          </div>
         <div class="text_wrapper">
@@ -98,13 +117,24 @@ export class ChatComponent implements OnInit, OnDestroy {
 
 
     this.renderer.appendChild(this.ul.nativeElement, li);
-  }
+    this.ul.nativeElement.scrollTop = this.ul.nativeElement.scrollHeight;  }
+
+
 
   connect() {
+
     this.webSocketAPI._connect();
   }
 
   disconnect() {
     this.webSocketAPI._disconnect();
   }
+
+  keyDownFunction(event,message) {
+    if (event.keyCode === 13 && message!=null) {
+
+      this.sendMessage();
+    }
+  }
+
 }

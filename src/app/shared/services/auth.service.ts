@@ -3,10 +3,11 @@ import { HttpClient } from '@angular/common/http';
 
 import { tap, map } from 'rxjs/operators';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { UserI } from './models/user';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { CompraService } from './compra.service';
+import { environment } from 'src/environments/environment';
+import { UserI } from '../backendModels/interfaces';
 
 @Injectable()
 export class AuthService {
@@ -19,8 +20,7 @@ export class AuthService {
 
   returnUrl: string;
 
-  AUTH_SERVER: string = 'https://tienda-pc.herokuapp.com/backend/service/usuario';
-  //AUTH_SERVER:string="http://localhost:8080/backend/service/usuario";
+  private baseUrl = environment.baseUrlRestServices;
 
   public currentUser: Observable<UserI>;
 
@@ -28,11 +28,11 @@ export class AuthService {
     private http: HttpClient,
     private router: Router,
     private route: ActivatedRoute,
-    private compraService:CompraService
+    private compraService: CompraService
   ) {
     if (this.loggedIn()) {
       this.userData.next(JSON.parse(localStorage.getItem('user_data')));
-     }
+    }
 
     this.loggedIn$.next(this.loggedIn());
     this.isAdmin$.next(this.isAdmin());
@@ -52,20 +52,20 @@ export class AuthService {
   }
 
   register(user) {
-    return this.http.post(this.AUTH_SERVER + '/register', user);
+    return this.http.post(this.baseUrl + '/usuario/register', user);
   }
 
   updateProfile(user) {
-    return this.http.patch(this.AUTH_SERVER + '/update', user);
+    return this.http.patch(this.baseUrl + '/usuario/update', user);
   }
 
   login1(email: string, password: string) {
     return this.http
-      .post<any>(this.AUTH_SERVER + '/login', { email, password })
+      .post<any>(this.baseUrl + '/usuario/login', { email, password })
       .pipe(
         map((user) => {
           // store user details and jwt token in local storage to keep user logged in between page refreshes
-
+          this.userData.next(user.usuario);
           localStorage.setItem('token', user.jwt);
           localStorage.setItem('user_data', JSON.stringify(user.usuario));
 
@@ -76,16 +76,15 @@ export class AuthService {
 
   login(email: string, password: string) {
     return this.http
-      .post<any>(this.AUTH_SERVER + '/login', { email, password })
+      .post<any>(this.baseUrl + '/usuario/login', { email, password })
       .subscribe(
         (res) => {
+          this.userData.next(res.usuario);
           localStorage.setItem('token', res.jwt);
           localStorage.setItem('user_data', JSON.stringify(res.usuario));
-          localStorage.setItem("cart",JSON.stringify(res.usuario.cart));
+          localStorage.setItem('cart', JSON.stringify(res.usuario.cart));
 
           this.loggedIn$.next(true);
-          this.userData.next(JSON.parse(localStorage.getItem('user_data')));
-
           this.router.navigateByUrl(this.returnUrl);
         },
         (error) => {
@@ -107,12 +106,15 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
-  getUserById(id:number):Observable<UserI>{
-    return this.http.get<UserI>(this.AUTH_SERVER+"/user/"+ id )
-
+  getUserById(id: number): Observable<UserI> {
+    return this.http.get<UserI>(this.baseUrl + '/usuario/user/' + id);
   }
 
   getAllUsers(): Observable<UserI[]> {
-    return this.http.get<UserI[]>(this.AUTH_SERVER + '/user');
+    return this.http.get<UserI[]>(this.baseUrl + '/usuario/user');
+  }
+
+  deleteUser(id: number) {
+    return this.http.delete(this.baseUrl + '/usuario/' + id);
   }
 }

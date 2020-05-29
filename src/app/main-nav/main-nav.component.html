@@ -1,32 +1,207 @@
-
-
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
-    <mat-toolbar>Menu</mat-toolbar>
-    <mat-nav-list>
 
-      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-        <!-- This is the tree node template for leaf nodes -->
-        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-          <!-- use a disabled button to provide padding for tree leaf -->
-          <button mat-button [routerLink]="['/'+node.url]" > {{node.name}}</button>
+    <div class="page-wrapper chiller-theme toggled ">
+      <a id="show-sidebar" class="btn btn-sm btn-dark">
+        <i class="fas fa-bars"></i>
+      </a>
+      <nav id="sidebar" class="sidebar-wrapper">
+        <div class="sidebar-content">
+          <div class="sidebar-brand">
+            <a>pro sidebar</a>
+            <div id="close-sidebar" (click)="sideNavStatus=false">
+              <i class="fas fa-times"></i>
+            </div>
+          </div>
+          <div class="sidebar-header" *ngIf="logged && !userLoading">
+            <div class="user-pic">
+              <img class="img-responsive img-rounded" src="{{userData.userDetails.img.name}}" alt="User picture">
+            </div>
+            <div class="user-info">
+              <span class="user-name">
+                <strong > {{userData.username}}</strong>
+              </span>
+              <span class="user-role">{{userData.roles}}</span>
+              <span class="user-status">
+                <i class="fa fa-circle"></i>
+                <span>Online</span>
+              </span>
+            </div>
+          </div>
+          <!-- sidebar-header  -->
+          <div class="sidebar-search">
+            <div>
+              <div class="input-group">
+                <input type="text" class="form-control search-menu" placeholder="Search...">
+                <div class="input-group-append">
+                  <span class="input-group-text">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- sidebar-search  -->
+          <div class="sidebar-menu">
+            <ul>
+              <li class="header-menu">
+                <span>General</span>
+              </li>
+              <li>
+                <a [routerLink]="['/home']">
+                  <i class="fa fa-home"></i>
+                  <span>Home</span>
+
+                </a>
+
+              </li>
+
+              <li class="sidebar-dropdown " [ngClass]="productsStatus ? 'active' : ''">
+                <a (click)="productsStatus=!productsStatus">
+                  <i class="fa fa-tachometer-alt"></i>
+                  <span>Productos</span>
+                  <span class="badge badge-pill badge-warning">New</span>
+                </a>
+                <div class="sidebar-submenu " [ngStyle]="productsStatus?{'display': 'block'}:{'display':''}">
+                  <ul>
+                    <li>
+                      <a [routerLink]="['/category/pc']">Sobremesa
+                      </a>
+                    </li>
+                    <li>
+                      <a [routerLink]="['/category/laptop']">Portátil</a>
+
+                    </li>
+                    <li>
+                      <a [routerLink]="['/category/mobile']">Móvil</a>
+                    </li>
+                  </ul>
 
 
-        </mat-tree-node>
-        <!-- This is the tree node template for expandable nodes -->
-        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
-          <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
-            <mat-icon class="mat-icon-rtl-mirror">
-              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-            </mat-icon>
-          </button>
-          {{node.name}}
-        </mat-tree-node>
-      </mat-tree>
+
+                </div>
+              </li>
 
 
-    </mat-nav-list>
+
+              <li>
+                <a [routerLink]="['/login']" *ngIf="logged==false">
+                  <i class="fas fa-sign-in-alt"></i> Login</a>
+              </li>
+              <li>
+                <a [routerLink]="['/register']" *ngIf="logged==false">
+                  <i class="fas fa-user-plus"></i>
+                  Register
+                </a>
+              </li>
+
+
+
+              <li class="sidebar-dropdown " [ngClass]="profileStatus ? 'active' : ''">
+                <a (click)="profileStatus=!profileStatus ">
+                  <i class="fa fa-tachometer-alt"></i>
+                  <span>Dashboard</span>
+                  <span class="badge badge-pill badge-warning">New</span>
+                </a>
+                <div class="sidebar-submenu " [ngStyle]="profileStatus?{'display': 'block'}:{'display':''}">
+                  <ul>
+                    <li>
+                      <a [routerLink]="['/profile']">My profile
+
+                      </a>
+                    </li>
+                    <li>
+                      <a [routerLink]="['/chat']" *ngIf="logged==true">Chat</a>
+                    </li>
+                    <li>
+                      <a [routerLink]="['/compras']">Mis Compras</a>
+                    </li>
+                    <li>
+                      <a [routerLink]="['/admin/addProduct']" *ngIf="isAdmin==true">Añadir Producto</a>
+                    </li>
+                    <li>
+                      <a [routerLink]="['/admin/messages']" *ngIf="isAdmin==true">Leer mensajes</a>
+                    </li>
+                    <li>
+                      <a [routerLink]="['/admin/users']" *ngIf="isAdmin==true">App Users</a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+
+
+              <li class="header-menu">
+                <span>Extra</span>
+              </li>
+
+              <li>
+                <a [routerLink]="['/contact']">
+                  <i class="fas fa-envelope-open-text"></i> Contact Us
+                </a>
+              </li>
+              <li>
+                <a [routerLink]="['/cart']">
+                  <i class="fa fa-shopping-cart"></i>
+                  <span>Carrito</span>
+                  <span class="badge badge-pill badge-danger" *ngIf="logged==cartItems$">{{cartItems$}}</span>
+                </a>
+
+              </li>
+
+
+              <li class="sidebar-dropdown " [ngClass]="themesStatus ? 'active' : ''">
+                <a (click)="themesStatus=!themesStatus">
+                  <i class="fas fa-eye-dropper"></i>
+                  <span>Change Themes</span>
+                </a>
+                <div class="sidebar-submenu " [ngStyle]="themesStatus?{'display': 'block'}:{'display':''}">
+                  <ul>
+                    <li>
+                      <a color="primary" (click)="onSetTheme('default-theme')">Default
+                      </a>
+                    </li>
+                    <li>
+                      <a color="primary" (click)="onSetTheme('dark-theme')">Dark</a>
+
+                    </li>
+                    <li>
+                      <a color="primary" (click)="onSetTheme('light-theme')">Light</a>
+                    </li>
+                  </ul>
+
+
+
+                </div>
+              </li>
+
+            </ul>
+          </div>
+          <!-- sidebar-menu  -->
+        </div>
+        <!-- sidebar-content  -->
+        <div class="sidebar-footer">
+          <a>
+            <i class="fa fa-bell"></i>
+            <span class="badge badge-pill badge-warning notification">3</span>
+          </a>
+          <a>
+            <i class="fa fa-envelope"></i>
+            <span class="badge badge-pill badge-success notification">7</span>
+          </a>
+          <a>
+            <i class="fa fa-cog"></i>
+            <span class="badge-sonar"></span>
+          </a>
+          <a (click)="onLogout()" *ngIf="logged==true">
+            <i class="fa fa-power-off"></i>
+          </a>
+        </div>
+      </nav>
+      <!-- sidebar-wrapper  -->
+
+    </div>
 
   </mat-sidenav>
   <mat-sidenav-content>
@@ -36,7 +211,7 @@
 
 
         <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
-          *ngIf="isHandset$ | async">
+          (click)="sideNavStatus=true" *ngIf="isHandset$ | async">
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
       </mat-toolbar-row>
@@ -64,7 +239,7 @@
 
         <span class="spacer"></span>
 
-        <button mat-button [matMenuTriggerFor]="settingsMenu">{{userName}} <mat-icon>arrow_drop_down</mat-icon></button>
+        <button mat-button [matMenuTriggerFor]="settingsMenu"><span *ngIf="!userLoading"> {{userName}} </span> <mat-icon>arrow_drop_down</mat-icon></button>
         <mat-menu #settingsMenu="matMenu" xPosition="before">
           <a class="dropdown-item" [routerLink]="['/profile']"><i class="fas fa-user-alt"></i> My profile</a>
           <a class="dropdown-item" [routerLink]="['/chat']" *ngIf="logged==true"><i class="fas fa-sms"></i> Chat</a>

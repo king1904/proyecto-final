@@ -1,9 +1,6 @@
-
-
-
 <div class="container">
 
-  <form class="well padding-bottom-10 " [formGroup]="postForm" (ngSubmit)="onPost()">
+  <form class="well padding-bottom-10 " [formGroup]="postForm" (ngSubmit)="onPost()" (keydown)="keyDownFunctionPost($event,postForm.value.text)">
     <textarea rows="2" class="form-control" placeholder="Write a review" formControlName="text" minlength="5"
       required></textarea>
     <div class="margin-top-10">
@@ -14,13 +11,13 @@
     </div>
   </form>
 
-  <div class="card">
+  <div class="card" *ngIf="!isLoading">
     <div class="card-body" *ngFor="let post of posts |paginate: { itemsPerPage: 10, currentPage: p } ,let i=index">
       <div class="row">
         <div class="col-md-2">
           <img src="{{post.user.userDetails.img.name}}" class="img img-rounded img-fluid rounded-circle z-depth-2"
             *ngIf="post.user.userDetails && post.user.userDetails.img" />
-          <p class="text-secondary text-center">{{post.date|date}}</p>
+          <p class="text-secondary text-center">{{post.date|timeago:live}}</p>
         </div>
         <div class="col-md-10">
           <p>
@@ -55,7 +52,7 @@
       <br>
       <br>
       <form class="well padding-bottom-10 collapse " id="replyForm{{i}}" [formGroup]="replyForm"
-        (ngSubmit)="onReplyPost(i)">
+        (ngSubmit)="onReplyPost(i)" (keydown)="keyDownFunctionReply($event,i,postForm.value.text)">
         <textarea rows="2" class="form-control" placeholder="Write a review" formControlName="text" minlength="5"
           required></textarea>
         <div class="margin-top-10">
@@ -72,16 +69,22 @@
               <img src="{{replay.user.userDetails.img.name}}"
                 class="img img-rounded img-fluid  rounded-circle z-depth-2"
                 *ngIf="replay.user.userDetails && post.user.userDetails.img" />
-              <p class="text-secondary text-center">{{replay.date|date}}</p>
+              <p class="text-secondary text-center">{{replay.date|timeago:live}}</p>
             </div>
             <div class="col-md-10">
               <p><a><strong>{{replay.user.username}}</strong></a></p>
               <p>{{replay.text}}</p>
-              <p>
-                <button class="float-right btn text-white btn-danger" (click)="onLike(replay.id,replay.likes,i,j)"> <i
-                    class="fa fa-heart"></i> ({{replay.likes}}) Likes</button>
 
-              </p>
+
+                <div (click)="bounceState[i]=!this.bounceState[i]" color="accent">
+                  <button mat-raised-button [@tdBounce]="onBounce(i)" class="float-right btn text-white btn-danger"
+                    (click)="onLike(replay.id,replay.likes,i,j)">
+                    <i class="fa fa-heart"></i>
+                    ({{replay.likes}}) Likes
+                  </button>
+                </div>
+
+
             </div>
           </div>
         </div>
@@ -89,7 +92,8 @@
       </div>
     </div>
     <br>
-    <pagination-controls class="d-flex justify-content-center" (pageChange)="p = $event" *ngIf="posts.length>10 && posts">
+    <pagination-controls class="d-flex justify-content-center" (pageChange)="p = $event"
+      *ngIf="posts.length>10 && posts">
     </pagination-controls>
   </div>
 </div>

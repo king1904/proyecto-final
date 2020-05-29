@@ -10,11 +10,13 @@ import { Router } from '@angular/router';
 })
 export class TokenInterceptorService implements HttpInterceptor{
 
-  constructor(private injector : Injector,private router:Router) { }
+
+  constructor(private injector : Injector) { }
 
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let authService=this.injector.get(AuthService);
+
     let tokenizedReq;
     if(authService.getToken()){
      tokenizedReq= req.clone({
@@ -48,11 +50,12 @@ export class TokenInterceptorService implements HttpInterceptor{
 
 
 private handleAuthError() {
+  let router=this.injector.get(Router);
 
   localStorage.removeItem('token');
 localStorage.removeItem('user_data');
 
-this.router.navigateByUrl("/login");
+router.navigateByUrl("/login");
 }
 
 

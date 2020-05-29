@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PostsService } from 'src/app/posts.service';
+import { PostsService } from 'src/app/shared/services/posts.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 

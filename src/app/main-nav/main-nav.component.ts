@@ -2,75 +2,10 @@ import { Component, OnInit, HostBinding } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { AuthService } from '../auth.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { CompraService } from '../compra.service';
+import { AuthService } from '../shared/services/auth.service';
+import { CompraService } from '../shared/services/compra.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import {
-  MatTreeFlatDataSource,
-  MatTreeFlattener,
-  MatTreeNestedDataSource,
-} from '@angular/material/tree';
-import { FlatTreeControl, NestedTreeControl } from '@angular/cdk/tree';
-
-/**
- * Food data with nested structure.
- * Each node has a name and an optional list of children.
- */
-interface FoodNode {
-  name: string;
-  url: string;
-  children?: FoodNode[];
-}
-
-const TREE_DATA: FoodNode[] = [
-  {
-    name: 'Productos',
-    children: [
-      { name: `Sobremesa`, url: 'category/pc' },
-      { name: 'Portatil', url: 'category/laptop' },
-      { name: 'Móvil', url: 'category/mobile' },
-    ],
-    url: '/',
-  },
-  {
-    name: 'Profile',
-    children: [
-      { name: `My Profile`, url: 'profile' },
-      { name: 'Chat', url: 'chat' },
-      { name: 'Mis Compras', url: 'compras' },
-      { name: 'Añadir Producto', url: 'admin/addProduct' },
-      { name: 'App Users', url: 'admin/users' },
-      { name: 'Leer Mensajes', url: 'admin/messages' },
-      { name: 'Logout', url: '' },
-
-    ],
-    url: '/',
-  },
-  {
-    name: 'Home',
-
-    url: 'home',
-  },
-  {
-    name: 'Register',
-
-    url: 'register',
-  },
-  {
-    name: 'Login',
-
-    url: 'login',
-  },
-
-];
-
-/** Flat node with expandable and level information */
-interface ExampleFlatNode {
-  expandable: boolean;
-  name: string;
-  level: number;
-}
+import { UserI } from '../shared/backendModels/interfaces';
 
 @Component({
   selector: 'app-main-nav',
@@ -80,9 +15,15 @@ interface ExampleFlatNode {
 export class MainNavComponent implements OnInit {
   logged: boolean;
   isAdmin: boolean;
+  sideNavStatus: boolean = false;
+  userLoading: boolean = true;
+  productsStatus: boolean = false;
+  profileStatus: boolean = false;
+  themesStatus: boolean = false;
 
   cartItems$;
-  userName;
+  userName: string = 'Dashboard';
+  userData: UserI;
 
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
@@ -91,39 +32,13 @@ export class MainNavComponent implements OnInit {
       shareReplay()
     );
 
-  private _transformer = (node: FoodNode, level: number) => {
-    return {
-      expandable: !!node.children && node.children.length > 0,
-      name: node.name,
-      url: node.url,
-      level: level,
-    };
-  };
-
-  treeControl = new FlatTreeControl<ExampleFlatNode>(
-    (node) => node.level,
-    (node) => node.expandable
-  );
-
-  treeFlattener = new MatTreeFlattener(
-    this._transformer,
-    (node) => node.level,
-    (node) => node.expandable,
-    (node) => node.children
-  );
-
-  dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-
   constructor(
     private breakpointObserver: BreakpointObserver,
     private authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute,
+
     private compraService: CompraService,
     public overlayContainer: OverlayContainer
-  ) {
-    this.dataSource.data = TREE_DATA;
-  }
+  ) {}
 
   @HostBinding('class') componentCssClass;
 
@@ -131,32 +46,32 @@ export class MainNavComponent implements OnInit {
     if (localStorage.getItem('app_theme'))
       this.onSetTheme(localStorage.getItem('app_theme'));
 
-    this.authService.isAdmin$.subscribe((data) => (this.isAdmin = data));
+    this.authService.isAdmin$.subscribe((data) => {
+      this.isAdmin = data;
+      console.log(data);
+    });
 
     this.authService.loggedIn$.subscribe((data) => (this.logged = data));
 
     this.authService.userData.subscribe((data) => {
-      if (data) {
-        this.userName = data.username;
-      } else {
-        this.userName = 'Profile';
-      }
+      this.userData = data;
+      this.userLoading = false;
+
+      data
+        ? (this.userName = this.userData.username)
+        : (this.userName = 'Dashboard');
     });
 
     if (this.logged)
-      this.compraService.cartItemsSubject.subscribe((data) => {
-        if (data == 0) {
-          this.compraService
-            .getCartById(JSON.parse(localStorage.getItem('user_data')).cart.id)
-            .subscribe((data) => {
-              this.cartItems$ = data.products.length;
-            });
-        } else this.cartItems$ = data;
-      });
+      this.compraService
+        .getCartById(this.userData.cart.id)
+        .subscribe((data) => {
+          this.cartItems$ = data.products.length;
+          console.log(data.products.length);
 
-    console.log(this.cartItems$);
-  }
-  hasChild = (_: number, node: ExampleFlatNode) => node.expandable;
+        });
+
+   }
 
   onSetTheme(theme) {
     this.overlayContainer.getContainerElement().classList.add(theme);
@@ -169,6 +84,6 @@ export class MainNavComponent implements OnInit {
     this.authService.isAdmin$.next(false);
 
     this.authService.logout();
-    this.userName = 'Profile';
+    this.userName = 'Dashboard';
   }
 }

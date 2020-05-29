@@ -2,7 +2,7 @@
 
 <app-search></app-search>
 
-<div class="col-sm-12 col-md-12 col-lg-12">
+<div class="col-sm-12 col-md-12 col-lg-12" *ngIf="!isLoading">
   <!-- product -->
   <div class="product-content product-wrap clearfix product-deatil">
     <div class="row">
@@ -17,7 +17,7 @@
 
 
       </div>
-      <div class="col-md-7 col-sm-12 col-xs-12" *ngIf="productoActual">
+      <div class="col-md-7 col-sm-12 col-xs-12">
 
         <h2 class="name">
           {{ productoActual.nombre }}

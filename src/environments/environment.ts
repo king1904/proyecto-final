@@ -2,9 +2,12 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-export const environment = {
-  production: false
+export const environment: {production: boolean, baseUrlRestServices: string} = {
+  production: false,
+  baseUrlRestServices: 'http://localhost:8080/backend/service'
+  //  baseUrlRestServices: 'https://tienda-pc.herokuapp.com/backend/service'
 };
+
 
 /*
  * For easier debugging in development mode, you can import the following file

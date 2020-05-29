@@ -2,34 +2,35 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
-import { ProductI } from './models/product';
+import { environment } from 'src/environments/environment';
+import { ProductI } from '../backendModels/interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
-  url:string="https://tienda-pc.herokuapp.com/backend/service";
-  //url:string="http://localhost:8080/backend/service";
+  private baseUrl = environment.baseUrlRestServices;
+
 
   constructor(private http:HttpClient) { }
 
   getProducts(){
 
-    return this.http.get(this.url+"/productos");
+    return this.http.get(this.baseUrl+"/productos");
   }
 
   getProductsPc(){
 
-    return this.http.get(this.url+"/productos/categoria/pc");
+    return this.http.get(this.baseUrl+"/productos/categoria/pc");
   }
   getProductsLaptop(){
 
-    return this.http.get(this.url+"/productos/categoria/laptop");
+    return this.http.get(this.baseUrl+"/productos/categoria/laptop");
   }
   getProductsMobile(){
 
-    return this.http.get(this.url+"/productos/categoria/mobile");
+    return this.http.get(this.baseUrl+"/productos/categoria/mobile");
   }
 
 
@@ -38,7 +39,7 @@ export class ProductService {
 
   getProductById(id:number){
 
-    return this.http.get<ProductI>(this.url+"/productos/"+id);
+    return this.http.get<ProductI>(this.baseUrl+"/productos/"+id);
   }
 
 
@@ -47,7 +48,7 @@ export class ProductService {
       // if not search term, return empty hero array.
       return of([]);
     }
-    return this.http.get<ProductI[]>(`${this.url}/productos/?nombre=${term}`).pipe(
+    return this.http.get<ProductI[]>(`${this.baseUrl}/productos/?nombre=${term}`).pipe(
       tap(x => x.length ?
          this.log(`found heroes matching "${term}"`) :
          this.log(`no heroes matching "${term}"`)),

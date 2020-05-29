@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CompraService } from 'src/app/compra.service';
-import { AuthService } from 'src/app/auth.service';
+import { CompraService } from 'src/app/shared/services/compra.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
 import { switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 

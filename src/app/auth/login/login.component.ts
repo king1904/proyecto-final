@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AuthService } from '../../auth.service';
+import { AuthService } from '../../shared/services/auth.service';
 import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
@@ -19,11 +19,10 @@ export class LoginComponent implements OnInit {
   constructor(
     private authSerive: AuthService,
     private router: Router,
-    private route: ActivatedRoute,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
@@ -37,7 +36,9 @@ export class LoginComponent implements OnInit {
           console.log(user);
           this.authSerive.loggedIn$.next(true);
 
-          if (JSON.parse( localStorage.getItem("user_data")).roles == 'ROLE_ADMIN') {
+          if (
+            JSON.parse(localStorage.getItem('user_data')).roles == 'ROLE_ADMIN'
+          ) {
             this.authSerive.isAdmin$.next(true);
           }
 

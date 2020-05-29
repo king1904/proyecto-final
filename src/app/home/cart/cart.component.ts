@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { CompraService } from 'src/app/compra.service';
-import { Subject, Observable } from 'rxjs';
+import { CompraService } from 'src/app/shared/services/compra.service';
+import { Observable } from 'rxjs';
 import { IPayPalConfig, ICreateOrderRequest } from 'ngx-paypal';
-import { ProductI } from 'src/app/models/product';
-import { AuthService } from 'src/app/auth.service';
-import { CartI } from 'src/app/models/cart';
+import { AuthService } from 'src/app/shared/services/auth.service';
+import { ProductI, CartI } from 'src/app/shared/backendModels/interfaces';
 
 @Component({
   selector: 'app-cart',
@@ -20,8 +19,8 @@ export class CartComponent implements OnInit {
 
   constructor(
     private compraService: CompraService,
-    private authService: AuthService,
-   ) {}
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.initConfig();
@@ -35,8 +34,6 @@ export class CartComponent implements OnInit {
         this.cartItems = data.products;
       });
   }
-
-
 
   private initConfig(): void {
     this.payPalConfig = {
@@ -141,10 +138,7 @@ export class CartComponent implements OnInit {
   deleteItem(pos: number) {
     this.compraService.deleteProductFromCart(pos).subscribe((data: CartI) => {
       this.compraService.cartItemsSubject.next(data.products.length);
-      this.cartItems=data.products;
+      this.cartItems = data.products;
     });
-
   }
-
-
 }
