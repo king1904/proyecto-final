@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -14,6 +14,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MainNavComponent } from './main-nav/main-nav.component';
 import { CoreModule } from './shared/core.module';
 import { HomeModule } from './home/home.module';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import es from '@angular/common/locales/es';
+import { registerLocaleData } from '@angular/common';
+
+registerLocaleData(es);
 
 @NgModule({
   declarations: [
@@ -34,8 +44,20 @@ import { HomeModule } from './home/home.module';
     BrowserAnimationsModule,
     CoreModule,
     HomeModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,
   ],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    {
+      provide: LOCALE_ID,
+      useValue: 'es-ES',
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

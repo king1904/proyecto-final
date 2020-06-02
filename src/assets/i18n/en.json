@@ -1,0 +1,48 @@
+{
+  "home": "Home",
+  "products":"Products",
+  "desktop":"Desktop",
+  "laptop":"Laptop",
+  "phone":"Mobile",
+  "contact_us":"Contact Us",
+  "search":"Search",
+  "my_profile":"My Profile",
+  "my_purchases":"My Purchaes",
+  "add_product":"Add Product",
+  "read_messages":"Read Messages",
+  "users":"Users",
+  "cart":"Cart",
+  "change_theme":"Change Theme",
+  "product_holder":{
+    "more_details":"More Details",
+    "free_shipping":"Free Shipping"
+  },
+  "user_control":{
+    "user_management":"User management",
+    "name":"Name",
+    "email":"Email",
+    "role":"Role",
+    "status":"Status",
+    "action":"Action",
+    "update":"Update",
+    "delete":"Delete",
+    "showing":"Showing",
+    "out_of":"out of",
+    "entries":"entries"
+  },
+  "profile":{
+    "my_profile":"My Profile",
+    "profile_pic":"Profile Picture",
+    "user_name":"Username",
+    "first_name":"First name",
+    "last_name":"Last name",
+    "display_role":"Display role",
+    "website":"Website",
+    "public_info":"Public info",
+    "new_password":"New password",
+    "update_profile":"Update Profile"
+  }
+
+
+
+}

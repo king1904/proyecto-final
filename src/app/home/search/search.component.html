@@ -1,4 +1,4 @@
-<div class="wrap">
+<!-- <div class="wrap">
   <div class="search">
      <input  #searchBox type="text" class="searchTerm"  (input)="search(searchBox.value)">
      <button type="submit" class="searchButton">
@@ -19,3 +19,22 @@
 
 
 
+ -->
+
+
+<p>
+  <mat-form-field>
+    <mat-select [formControl]="productServerSideCtrl" placeholder="{{ 'search' | transloco }}...">
+
+      <mat-option>
+        <ngx-mat-select-search [formControl]="productServerSideFilteringCtrl" [searching]="searching">
+        </ngx-mat-select-search>
+      </mat-option>
+      <mat-option *ngFor="let product of filteredServerSideProducts | async" [value]="product"
+        (click)="navToProduct(product.id)">
+        <a> {{product.nombre}} </a>
+      </mat-option>
+    </mat-select>
+
+  </mat-form-field>
+</p>

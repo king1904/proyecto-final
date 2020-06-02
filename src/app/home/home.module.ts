@@ -20,6 +20,7 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
 import { SearchComponent } from './search/search.component';
 import { NgxPayPalModule } from 'ngx-paypal';
 import { ProductHolderComponent } from './category/product-holder/product-holder.component';
+ import { AuthModule } from '../auth/auth.module';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,7 @@ import { ProductHolderComponent } from './category/product-holder/product-holder
     ChatComponent,
     LoadingSpinnerComponent,
     ProductHolderComponent,
-  ],
+   ],
   imports: [
     BrowserModule,
     NgxPaginationModule,
@@ -47,6 +48,7 @@ import { ProductHolderComponent } from './category/product-holder/product-holder
     AdminModule,
     NgxPayPalModule,
     RouterModule,
+    AuthModule
   ],
   exports: [
     ProfileComponent,
@@ -60,7 +62,8 @@ import { ProductHolderComponent } from './category/product-holder/product-holder
     LaptopComponent,
     MobileComponent,
     ChatComponent,
-  ],
+    NgxPayPalModule
+   ],
   providers: [],
   bootstrap: [],
 })

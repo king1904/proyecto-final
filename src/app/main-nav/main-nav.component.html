@@ -10,7 +10,7 @@
         <div class="sidebar-content">
           <div class="sidebar-brand">
             <a>pro sidebar</a>
-            <div id="close-sidebar" (click)="sideNavStatus=false">
+            <div id="close-sidebar" (click)="drawer.close()">
               <i class="fas fa-times"></i>
             </div>
           </div>
@@ -20,7 +20,7 @@
             </div>
             <div class="user-info">
               <span class="user-name">
-                <strong > {{userData.username}}</strong>
+                <strong> {{userData.username}}</strong>
               </span>
               <span class="user-role">{{userData.roles}}</span>
               <span class="user-status">
@@ -33,12 +33,9 @@
           <div class="sidebar-search">
             <div>
               <div class="input-group">
-                <input type="text" class="form-control search-menu" placeholder="Search...">
-                <div class="input-group-append">
-                  <span class="input-group-text">
-                    <i class="fa fa-search" aria-hidden="true"></i>
-                  </span>
-                </div>
+                <app-search></app-search>
+
+
               </div>
             </div>
           </div>
@@ -51,7 +48,7 @@
               <li>
                 <a [routerLink]="['/home']">
                   <i class="fa fa-home"></i>
-                  <span>Home</span>
+                  <span>{{ 'home' | transloco }}</span>
 
                 </a>
 
@@ -60,25 +57,23 @@
               <li class="sidebar-dropdown " [ngClass]="productsStatus ? 'active' : ''">
                 <a (click)="productsStatus=!productsStatus">
                   <i class="fa fa-tachometer-alt"></i>
-                  <span>Productos</span>
+                  <span>{{ 'products' | transloco }}</span>
                   <span class="badge badge-pill badge-warning">New</span>
                 </a>
                 <div class="sidebar-submenu " [ngStyle]="productsStatus?{'display': 'block'}:{'display':''}">
                   <ul>
                     <li>
-                      <a [routerLink]="['/category/pc']">Sobremesa
+                      <a [routerLink]="['/category/pc']"><span>{{ 'desktop' | transloco }}</span>
                       </a>
                     </li>
                     <li>
-                      <a [routerLink]="['/category/laptop']">Portátil</a>
+                      <a [routerLink]="['/category/laptop']"><span>{{ 'laptop' | transloco }}</span></a>
 
                     </li>
                     <li>
-                      <a [routerLink]="['/category/mobile']">Móvil</a>
+                      <a [routerLink]="['/category/mobile']"><span>{{ 'phone' | transloco }}</span></a>
                     </li>
                   </ul>
-
-
 
                 </div>
               </li>
@@ -98,7 +93,7 @@
 
 
 
-              <li class="sidebar-dropdown " [ngClass]="profileStatus ? 'active' : ''">
+              <li class="sidebar-dropdown " [ngClass]="profileStatus ? 'active' : ''" *ngIf="logged">
                 <a (click)="profileStatus=!profileStatus ">
                   <i class="fa fa-tachometer-alt"></i>
                   <span>Dashboard</span>
@@ -112,19 +107,23 @@
                       </a>
                     </li>
                     <li>
+
                       <a [routerLink]="['/chat']" *ngIf="logged==true">Chat</a>
                     </li>
                     <li>
                       <a [routerLink]="['/compras']">Mis Compras</a>
                     </li>
                     <li>
-                      <a [routerLink]="['/admin/addProduct']" *ngIf="isAdmin==true">Añadir Producto</a>
+                      <a [routerLink]="['/admin/addProduct']"
+                        *ngIf="isAdmin==true"><span>{{ 'add_product' | transloco }}</span></a>
                     </li>
                     <li>
-                      <a [routerLink]="['/admin/messages']" *ngIf="isAdmin==true">Leer mensajes</a>
+                      <a [routerLink]="['/admin/messages']"
+                        *ngIf="isAdmin==true"><span>{{ 'read_messages' | transloco }}</span></a>
                     </li>
                     <li>
-                      <a [routerLink]="['/admin/users']" *ngIf="isAdmin==true">App Users</a>
+                      <a [routerLink]="['/admin/users']"
+                        *ngIf="isAdmin==true"><span>{{ 'users' | transloco }}</span></a>
                     </li>
                   </ul>
                 </div>
@@ -138,23 +137,33 @@
 
               <li>
                 <a [routerLink]="['/contact']">
-                  <i class="fas fa-envelope-open-text"></i> Contact Us
+                  <i class="fas fa-envelope-open-text"></i> <span>{{ 'contact_us' | transloco }}</span>
                 </a>
               </li>
+
               <li>
                 <a [routerLink]="['/cart']">
                   <i class="fa fa-shopping-cart"></i>
-                  <span>Carrito</span>
+                  <span>{{ 'cart' | transloco }}</span>
                   <span class="badge badge-pill badge-danger" *ngIf="logged==cartItems$">{{cartItems$}}</span>
                 </a>
 
+              </li>
+              <li>
+                <a>
+                  <i class="fa fa-tachometer-alt"></i>
+
+                <mat-slide-toggle [(ngModel)]="isChecked" class="language-check" (click)="changeLanguage(isChecked)"> <span *ngIf="isChecked">ES</span>
+                  <span *ngIf="!isChecked">EN</span>
+                </mat-slide-toggle>
+              </a>
               </li>
 
 
               <li class="sidebar-dropdown " [ngClass]="themesStatus ? 'active' : ''">
                 <a (click)="themesStatus=!themesStatus">
                   <i class="fas fa-eye-dropper"></i>
-                  <span>Change Themes</span>
+                  <span><span>{{ 'change_theme' | transloco }}</span></span>
                 </a>
                 <div class="sidebar-submenu " [ngStyle]="themesStatus?{'display': 'block'}:{'display':''}">
                   <ul>
@@ -182,15 +191,15 @@
         </div>
         <!-- sidebar-content  -->
         <div class="sidebar-footer">
-          <a>
+          <a [routerLink]="['/chat']">
             <i class="fa fa-bell"></i>
-            <span class="badge badge-pill badge-warning notification">3</span>
+            <span class="badge badge-pill badge-warning notification">{{numeroMensajes}}</span>
           </a>
           <a>
             <i class="fa fa-envelope"></i>
             <span class="badge badge-pill badge-success notification">7</span>
           </a>
-          <a>
+          <a [routerLink]="['/profile']">
             <i class="fa fa-cog"></i>
             <span class="badge-sonar"></span>
           </a>
@@ -221,35 +230,55 @@
       <mat-toolbar-row class="navbar-top">
 
         <button mat-button [routerLink]="['/home']">Logo</button>
-        <button mat-button [routerLink]="['/home']">Home</button>
+        <button mat-button [routerLink]="['/home']"><span>{{ 'home' | transloco }}</span>
+        </button>
 
 
-        <button mat-button [matMenuTriggerFor]="productosMenu">Productos <mat-icon>arrow_drop_down</mat-icon></button>
+        <button mat-button [matMenuTriggerFor]="productosMenu"><span>{{ 'products' | transloco }}</span>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
         <mat-menu #productosMenu="matMenu" xPosition="after">
-          <a class="dropdown-item" [routerLink]="['/category/pc']">Sobremesa</a>
-          <a class="dropdown-item" [routerLink]="['/category/laptop']">Portatil</a>
-          <a class="dropdown-item" [routerLink]="['/category/mobile']">Móvil</a>
+          <a class="dropdown-item" [routerLink]="['/category/pc']"><span>{{ 'desktop' | transloco }}</span></a>
+          <a class="dropdown-item" [routerLink]="['/category/laptop']"><span>{{ 'laptop' | transloco }}</span></a>
+          <a class="dropdown-item" [routerLink]="['/category/mobile']"><span>{{ 'phone' | transloco }}</span></a>
         </mat-menu>
 
         <button mat-button [routerLink]="['/login']" *ngIf="logged==false"><i class="fas fa-sign-in-alt"></i> Login
         </button>
         <button mat-button [routerLink]="['/register']" *ngIf="logged==false"><i class="fas fa-user-plus"></i>
           Register</button>
-        <button mat-button [routerLink]="['/contact']"><i class="fas fa-envelope-open-text"></i> Contact Us</button>
+        <button mat-button [routerLink]="['/contact']"><i class="fas fa-envelope-open-text"></i>
+          <span>{{ 'contact_us' | transloco }}</span></button>
+
+        <app-search></app-search>
 
         <span class="spacer"></span>
 
-        <button mat-button [matMenuTriggerFor]="settingsMenu"><span *ngIf="!userLoading"> {{userName}} </span> <mat-icon>arrow_drop_down</mat-icon></button>
+
+        <mat-slide-toggle [(ngModel)]="isChecked" class="language-check" (click)="changeLanguage(isChecked)"> <span *ngIf="isChecked">ES</span>
+          <span *ngIf="!isChecked">EN</span>
+        </mat-slide-toggle>
+
+        <button mat-button [matMenuTriggerFor]="settingsMenu"><span *ngIf="!userLoading"> {{userName}} </span>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
         <mat-menu #settingsMenu="matMenu" xPosition="before">
-          <a class="dropdown-item" [routerLink]="['/profile']"><i class="fas fa-user-alt"></i> My profile</a>
-          <a class="dropdown-item" [routerLink]="['/chat']" *ngIf="logged==true"><i class="fas fa-sms"></i> Chat</a>
-          <a class="dropdown-item" [routerLink]="['/compras']"><i class="fas fa-shopping-bag"></i>Mis Compras</a>
+          <a class="dropdown-item" [routerLink]="['/profile']"><i
+              class="fas fa-user-alt"></i><span>{{ 'my_profile' | transloco }}</span></a>
+          <a class="dropdown-item" [routerLink]="['/chat']" *ngIf="logged==true">
+            <i class="fa fa-bell"></i>
+            Chat
+            <span class="badge badge-pill badge-warning notification">{{numeroMensajes}}</span>
+          </a>
+
+          <a class="dropdown-item" [routerLink]="['/compras']"><i
+              class="fas fa-shopping-bag"></i><span>{{ 'my_purchases' | transloco }}</span></a>
           <a class="dropdown-item" [routerLink]="['/admin/addProduct']" *ngIf="isAdmin==true"><i
-              class="fas fa-cart-plus"></i> Añadir Producto</a>
+              class="fas fa-cart-plus"></i> <span>{{ 'add_product' | transloco }}</span></a>
           <a class="dropdown-item" [routerLink]="['/admin/messages']" *ngIf="isAdmin==true"><i
-              class="fas fa-envelope"></i> Leer mensajes</a>
-          <a class="dropdown-item" [routerLink]="['/admin/users']" *ngIf="isAdmin==true"><i class="fas fa-users"></i>App
-            Users</a>
+              class="fas fa-envelope"></i> <span>{{ 'read_messages' | transloco }}</span></a>
+          <a class="dropdown-item" [routerLink]="['/admin/users']" *ngIf="isAdmin==true"><i
+              class="fas fa-users"></i><span>{{ 'users' | transloco }}</span></a>
 
           <a class="dropdown-item" (click)="onLogout()" *ngIf="logged==true"><i class="fas fa-sign-out-alt"></i>
             Logout</a>
@@ -267,6 +296,7 @@
         </mat-menu>
 
 
+
         <a class="nav-link " [routerLink]="['/cart']"> <i class="fa" style="font-size:24px">&#xf07a;</i>
           <span class='badge badge-warning' id='lblCartCount' *ngIf="logged==true"> {{ cartItems$}} </span>
         </a>
@@ -276,6 +306,7 @@
     </mat-toolbar>
 
     <ng-content></ng-content>
+
 
   </mat-sidenav-content>
 </mat-sidenav-container>

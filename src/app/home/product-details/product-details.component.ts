@@ -5,6 +5,7 @@ import { ProductService } from 'src/app/shared/services/product.service';
 import { CompraService } from 'src/app/shared/services/compra.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { ProductI } from 'src/app/shared/backendModels/interfaces';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-product-details',
@@ -24,12 +25,13 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private productService: ProductService,
     private compraService: CompraService,
-    private authService: AuthService
+    private authService: AuthService,
+    public snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
     this.routeSub = this.route.params.subscribe((params) => {
-      //console.log(params['id']) //log the value of id
+
       this.productId = params['id'];
     });
 
@@ -52,13 +54,20 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   }
 
   addToCart() {
-    this.compraService
-      .addCart(this.productoActual.id)
-      .subscribe((data: any) => {
+    this.compraService.addCart(this.productoActual.id).subscribe(
+      (data: any) => {
         this.compraService.cartItemsSubject.next(data.products.length);
 
-        console.log(data);
-      });
+        this.snackBar.open('Se ha añadido al carrito con éxito !!!', 'OK', {
+          duration: 4000,
+        });
+      },
+      (error) => {
+        this.snackBar.open('Ha ocurrido un error !!!', 'OK', {
+          duration: 4000,
+        });
+        console.log(error);
+      }
+    );
   }
-
 }

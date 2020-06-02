@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
 import { FormGroup, FormControl } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private authSerive: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -27,18 +29,22 @@ export class LoginComponent implements OnInit {
   }
 
   onLogin(): void {
-    console.log(this.loginForm.value);
 
     this.authSerive
       .login1(this.loginForm.value.email, this.loginForm.value.password)
       .subscribe(
         (user) => {
-          console.log(user);
+          this.snackBar.open(
+            'Bienvenido ' + user.usuario.username + ' !!!',
+            'OK',
+            {
+              duration: 4000,
+            }
+          );
+
           this.authSerive.loggedIn$.next(true);
 
-          if (
-            JSON.parse(localStorage.getItem('user_data')).roles == 'ROLE_ADMIN'
-          ) {
+          if (user.usuario.roles == 'ROLE_ADMIN') {
             this.authSerive.isAdmin$.next(true);
           }
 
@@ -46,6 +52,10 @@ export class LoginComponent implements OnInit {
         },
         (error) => {
           console.log(error);
+
+          this.snackBar.open('Ha ocurrido un error !!!', 'OK', {
+            duration: 4000,
+          });
         }
       );
   }

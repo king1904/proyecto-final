@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 })
 export class WebSocketService {
   messagesSubject$ = new BehaviorSubject<any>({});
+  mensajesNoVistos:any[]=[];
 
   private baseUrl = environment.baseUrlRestServices;
 

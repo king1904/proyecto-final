@@ -27,8 +27,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private route: ActivatedRoute,
-    private compraService: CompraService
+    private route: ActivatedRoute
   ) {
     if (this.loggedIn()) {
       this.userData.next(JSON.parse(localStorage.getItem('user_data')));
@@ -45,8 +44,8 @@ export class AuthService {
   }
 
   isAdmin() {
-    if (localStorage.getItem('user_data'))
-      return JSON.parse(localStorage.getItem('user_data')).roles == 'ROLE_ADMIN'
+     if (this.userData.value)
+      return this.userData.value.roles == 'ROLE_ADMIN'
         ? true
         : false;
   }
@@ -58,6 +57,10 @@ export class AuthService {
   updateProfile(user) {
     return this.http.patch(this.baseUrl + '/usuario/update', user);
   }
+  adminUpdateUser(id:number,user) {
+    return this.http.patch(this.baseUrl + '/usuario/update/'+id, user);
+  }
+
 
   login1(email: string, password: string) {
     return this.http
@@ -65,6 +68,7 @@ export class AuthService {
       .pipe(
         map((user) => {
           // store user details and jwt token in local storage to keep user logged in between page refreshes
+
           this.userData.next(user.usuario);
           localStorage.setItem('token', user.jwt);
           localStorage.setItem('user_data', JSON.stringify(user.usuario));

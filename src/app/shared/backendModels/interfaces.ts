@@ -4,10 +4,10 @@ export interface CartI {
 }
 
 export interface ImageI {
-  id: number;
+  id?: number;
   name: string;
   originalName: string;
-  date: Date;
+  date?: Date;
 }
 
 export interface JwtResponseI {
@@ -27,7 +27,7 @@ export interface Post {
 }
 
 export interface ProductI {
-  id: number;
+  id?: number;
   nombre: string;
   descripcion: string;
   categoria: string;

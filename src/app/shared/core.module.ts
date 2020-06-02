@@ -26,11 +26,15 @@ import { DatePipe } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TimeagoModule, TimeagoIntl, TimeagoPipe } from 'ngx-timeago';
+// MDB Angular Free
+import { MDBBootstrapModule } from 'angular-bootstrap-md';
+import {  MatSelectModule } from '@angular/material/select';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { TranslocoRootModule } from '../transloco-root.module';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
-  declarations: [
-
-  ],
+  declarations: [],
   imports: [
     BrowserModule,
     CovalentLayoutModule,
@@ -56,20 +60,25 @@ import { TimeagoModule, TimeagoIntl, TimeagoPipe } from 'ngx-timeago';
     MatTreeModule,
     MatDialogModule,
     MatSnackBarModule,
+    MatSlideToggleModule,
     TimeagoModule.forRoot(),
+    MDBBootstrapModule.forRoot(),
+    MatSelectModule,
+    NgxMatSelectSearchModule,
+    TranslocoRootModule
   ],
-  exports:[
+  exports: [
     BrowserModule,
     CovalentLayoutModule,
     CovalentStepsModule,
     MatCarouselModule,
     CovalentHttpModule,
     TimeagoModule,
-     CovalentHighlightModule,
+    CovalentHighlightModule,
     CovalentMarkdownModule,
     CovalentDynamicFormsModule,
     BrowserAnimationsModule,
-     MatIconModule,
+    MatIconModule,
     MatListModule,
     MatMenuModule,
     LayoutModule,
@@ -84,8 +93,13 @@ import { TimeagoModule, TimeagoIntl, TimeagoPipe } from 'ngx-timeago';
     MatTreeModule,
     MatDialogModule,
     MatSnackBarModule,
-   ],
-  providers: [ DatePipe, TimeagoIntl, TimeagoPipe],
+    MDBBootstrapModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    NgxMatSelectSearchModule,
+    TranslocoRootModule
+  ],
+  providers: [DatePipe, TimeagoIntl, TimeagoPipe],
   bootstrap: [],
 })
 export class CoreModule {}

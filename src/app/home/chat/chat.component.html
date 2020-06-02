@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 <div class="chat_window">
   <div class="top_menu">
     <div class="buttons">
@@ -12,13 +5,32 @@
       <div class="button minimize"></div>
       <div class="button maximize"></div>
     </div>
-    <div class="title"  >Chat</div>
+    <div class="title">Chat</div>
   </div>
 
 
-  <ul class="messages" #ul>
+  <ul class="messages" #contenido>
+
+    <li #messages *ngFor="let message of mensajesNoVistos"
+      [ngClass]="message.username==username ? 'message right appeared' : 'message left appeared'">
 
 
+        <div class="col-md-2" [ngClass]="message.username==username ? 'username-right' : 'username-left'"> <a><b>
+              {{message.username}}</b> </a></div> <br>
+        <div class="col-md-2">
+          <img class="avatar" name="pic" src="{{message.img}}" />
+        </div>
+         <div class="col-md-2" [ngClass]="message.username==username ? 'username-right' : 'username-left'">
+          <p class="text-secondary text-center "><b *ngIf="message.date ">
+              {{ message.date |timeago:live}} </b> </p>
+        </div>
+
+
+
+      <div class="text_wrapper">
+        <div class="text">{{message.content}}</div>
+      </div>
+    </li>
 
   </ul>
 
@@ -30,9 +42,8 @@
       </div>
       <div class="send_message" (click)="sendMessage()">
         <div class="icon"></div>
-        <div class="text"  > Send</div>
+        <div class="text"> Send</div>
       </div>
     </div>
   </form>
 </div>
-

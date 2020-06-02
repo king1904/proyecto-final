@@ -1,0 +1,46 @@
+{
+  "home": "Inicio",
+  "products":"Productos",
+  "desktop":"Sobremesa",
+  "laptop":"Portátil",
+  "phone":"Móvil",
+  "contact_us":"Contáctanos",
+  "search":"Buscar",
+  "my_profile":"Mi Perfíl",
+  "my_purchases":"Mis Compras",
+  "add_product":"Añadir Producto",
+  "read_messages":"Leer Mensajes",
+  "users":"Usuarios",
+  "cart":"Carrito",
+  "change_theme":"Cambiar Estilo",
+  "product_holder":{
+    "more_details":"Más Detalles",
+    "free_shipping":"Envío gratis"
+  },
+  "user_control":{
+    "user_management":"Gestión de usuarios",
+    "name":"Nombre",
+    "email":"Email",
+    "role":"Rol",
+    "status":"Estatus",
+    "action":"Acción",
+    "update":"Actualizar",
+    "delete":"Borrar",
+    "showing":"Mostrando",
+    "out_of":"de",
+    "entries":"entradas"
+  },
+  "profile":{
+    "my_profile":"Mi Perfíl",
+    "profile_pic":"Foto de perfíl",
+    "user_name":"Nombre de usuario",
+    "first_name":"Nombre",
+    "last_name":"Apellidos",
+    "display_role":"Mostrar el rol",
+    "website":"Sitio web",
+    "public_info":"Información pública",
+    "new_password":"Nueva contraseña",
+    "update_profile":"Actualizar el perfíl"
+  }
+
+}

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { UserI } from 'src/app/shared/backendModels/interfaces';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-profile',
@@ -31,22 +32,18 @@ export class ProfileComponent implements OnInit {
       JSON.parse(localStorage.getItem('user_data')).username
     ),
     email: new FormControl(JSON.parse(localStorage.getItem('user_data')).email),
-    password: new FormControl(""),
+    password: new FormControl(''),
   });
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, public snackBar: MatSnackBar) {}
 
-  async ngOnInit() {
-    // this.user=JSON.parse(localStorage.getItem("user_data"));
+  ngOnInit() {
     this.authService
       .getUserById(JSON.parse(localStorage.getItem('user_data')).id)
       .subscribe((data) => {
         this.user = data;
         console.log(data);
       });
-
-    //this.authService.getUserById()
-    console.log(this.user);
   }
 
   onSubmit() {
@@ -56,7 +53,6 @@ export class ProfileComponent implements OnInit {
     this.updateForm.value.password.trim() == ''
       ? (pass = JSON.parse(localStorage.getItem('user_data')).password)
       : (pass = this.updateForm.value.password);
-
 
     let userSent = {
       id: JSON.parse(localStorage.getItem('user_data')).id,
@@ -81,17 +77,18 @@ export class ProfileComponent implements OnInit {
       password: pass,
     };
 
-    console.log(JSON.stringify(userSent));
-
     this.authService.updateProfile(userSent).subscribe(
       (res) => {
-        console.log(res);
-
-        //localStorage.removeItem("user_data");
+        this.snackBar.open('Tu perfíl se ha actualizado con éxito !!!', 'OK', {
+          duration: 4000,
+        });
         localStorage.setItem('user_data', JSON.stringify(res));
       },
       (error) => {
         console.log(error);
+        this.snackBar.open('Ha ocurrido un error!!!', 'OK', {
+          duration: 4000,
+        });
       }
     );
   }

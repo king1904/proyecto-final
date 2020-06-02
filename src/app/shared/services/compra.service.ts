@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ProductI, CartI } from '../backendModels/interfaces';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ export class CompraService {
   cartProducts: ProductI[];
 
   sessionCartItems;
-
+ userData;
   comprasArray;
   comprasId: number[] = [];
 
@@ -20,7 +21,19 @@ export class CompraService {
 
   private baseUrl = environment.baseUrlRestServices;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private authService:AuthService) {
+    this.authService.userData.subscribe((data) => {
+      this.userData = data;
+    });
+    if(this.userData){
+      this
+      .getCartById(this.userData.cart.id)
+      .subscribe((data) => {
+        this.cartItemsSubject.next(data.products.length);
+       });
+    }
+
+   }
 
   addProduct(product) {
     return this.http.post(this.baseUrl + '/productos/', product);
