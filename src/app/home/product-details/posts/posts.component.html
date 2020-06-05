@@ -1,11 +1,12 @@
 <div class="container">
 
-  <form class="well padding-bottom-10 " [formGroup]="postForm" (ngSubmit)="onPost()" (keydown)="keyDownFunctionPost($event,postForm.value.text)">
-    <textarea rows="2" class="form-control" placeholder="Write a review" formControlName="text" minlength="5"
-      required></textarea>
+  <form class="well padding-bottom-10 " [formGroup]="postForm" (ngSubmit)="onPost()"
+    (keydown)="keyDownFunctionPost($event,postForm.value.text)">
+    <textarea rows="2" class="form-control" placeholder="{{'product_posts.write_comment'|transloco}}"
+      formControlName="text" minlength="5" required></textarea>
     <div class="margin-top-10">
       <button type="submit" class="btn btn-sm btn-primary pull-right">
-        Submit Comment
+        {{'product_posts.submit_comment'|transloco}}
       </button>
 
     </div>
@@ -32,7 +33,7 @@
           <p>{{post.text}}</p>
           <div>
             <a class="float-right btn btn-outline-primary ml-2" data-toggle="collapse" href="#replyForm{{i}}"
-              role="button"> <i class="fa fa-reply"></i> Reply</a>
+              role="button"> <i class="fa fa-reply"></i> {{'product_posts.reply'|transloco}}</a>
 
 
             <div (click)="bounceState[i]=!this.bounceState[i]" color="accent">
@@ -48,16 +49,16 @@
       </div>
       <a class="btn btn-primary " data-toggle="collapse" href="#replySection{{i}}" role="button" aria-expanded="false"
         aria-controls="multiCollapseExample1" [class.disabled]="!post.replays.length"><span *ngIf="post.replays">
-          ({{post.replays.length}})</span> Comentarios</a>
+          ({{post.replays.length}})</span> {{'product_posts.comments'|transloco}}</a>
       <br>
       <br>
       <form class="well padding-bottom-10 collapse " id="replyForm{{i}}" [formGroup]="replyForm"
         (ngSubmit)="onReplyPost(i)" (keydown)="keyDownFunctionReply($event,i,postForm.value.text)">
-        <textarea rows="2" class="form-control" placeholder="Write a review" formControlName="text" minlength="5"
-          required></textarea>
+        <textarea rows="2" class="form-control" placeholder="{{'product_posts.write_comment'|transloco}}"
+          formControlName="text" minlength="5" required></textarea>
         <div class="margin-top-10">
           <button type="submit" class="btn btn-sm btn-primary pull-right">
-            Submit Comment
+            {{'product_posts.submit_comment'|transloco}}
           </button>
         </div>
       </form>
@@ -76,13 +77,13 @@
               <p>{{replay.text}}</p>
 
 
-                <div (click)="bounceState[i]=!this.bounceState[i]" color="accent">
-                  <button mat-raised-button [@tdBounce]="onBounce(i)" class="float-right btn text-white btn-danger"
-                    (click)="onLike(replay.id,replay.likes,i,j)">
-                    <i class="fa fa-heart"></i>
-                    ({{replay.likes}}) Likes
-                  </button>
-                </div>
+              <div (click)="bounceState[i]=!this.bounceState[i]" color="accent">
+                <button mat-raised-button [@tdBounce]="onBounce(i)" class="float-right btn text-white btn-danger"
+                  (click)="onLike(replay.id,replay.likes,i,j)">
+                  <i class="fa fa-heart"></i>
+                  ({{replay.likes}}) Likes
+                </button>
+              </div>
 
 
             </div>

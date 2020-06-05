@@ -6,7 +6,7 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { AuthService } from '../shared/services/auth.service';
 import { CompraService } from '../shared/services/compra.service';
@@ -20,7 +20,8 @@ import { TranslocoService } from '@ngneat/transloco';
   styleUrls: ['./main-nav.component.css'],
 })
 export class MainNavComponent implements OnInit, OnDestroy, AfterViewInit {
-  isChecked:boolean ;
+  isChecked: boolean=JSON.parse(localStorage.getItem("language"));
+  languageSubject$ = new BehaviorSubject<boolean>(JSON.parse(localStorage.getItem("language")));
   logged: boolean;
   isAdmin: boolean;
   sideNavStatus: boolean = false;
@@ -50,13 +51,16 @@ export class MainNavComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-
-
-    this.isChecked
-      ? this.translocoService.setActiveLang('es')
-      : this.translocoService.setActiveLang('en');
-      console.log(this.isChecked)
-
+    this.languageSubject$.subscribe((data) => {
+      console.log(data);
+      if (data) {
+        this.translocoService.setActiveLang('es');
+        localStorage.setItem('language', 'true');
+      } else {
+        this.translocoService.setActiveLang('en');
+        localStorage.setItem('language', 'false');
+      }
+    });
   }
 
   @HostBinding('class') componentCssClass;
@@ -66,16 +70,9 @@ export class MainNavComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-
     if (localStorage.getItem('language') == '') {
       localStorage.setItem('language', 'true');
-    } else {
-      (JSON.parse(localStorage.getItem('language')) === 'true')
-        ? (this.isChecked = true)
-        : (this.isChecked = false);
-        console.log(this.isChecked)
     }
-
     if (localStorage.getItem('app_theme'))
       this.onSetTheme(localStorage.getItem('app_theme'));
 
@@ -111,11 +108,9 @@ export class MainNavComponent implements OnInit, OnDestroy, AfterViewInit {
 
   changeLanguage(isChecked: boolean) {
     if (!isChecked) {
-      localStorage.setItem('language', 'true');
-      this.translocoService.setActiveLang('es');
+      this.languageSubject$.next(true);
     } else {
-      localStorage.setItem('language', 'false');
-      this.translocoService.setActiveLang('en');
+      this.languageSubject$.next(false);
     }
   }
 

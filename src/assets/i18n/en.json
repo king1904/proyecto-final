@@ -41,6 +41,33 @@
     "public_info":"Public info",
     "new_password":"New password",
     "update_profile":"Update Profile"
+  },
+  "contact_form":{
+    "drop_message":"Drop Us a Message",
+    "name":"Your Name",
+    "email":"Your Email",
+    "phone":"Your Phone number",
+    "message":"Your Message",
+    "send_message":"Send Message"
+
+  },
+  "product_details":{
+    "price":"Price",
+    "available":"Available",
+    "add_cart":"Add to Cart",
+    "delivery_time":"Delivery Time",
+    "working_days":"Working Days",
+    "certified":"Certified",
+    "quality":"Quality",
+    "add_wishlist":"Add to Whishlist",
+    "contact_seller":"Contact seller",
+    "comments":"Comments"
+  },
+  "product_posts":{
+    "submit_comment":"Submit Comment",
+    "write_comment":"Write a comment",
+    "reply":"Reply",
+    "comments":"Comments"
   }
 
 

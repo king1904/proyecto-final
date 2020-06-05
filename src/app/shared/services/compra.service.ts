@@ -39,6 +39,11 @@ export class CompraService {
     return this.http.post(this.baseUrl + '/productos/', product);
   }
 
+  addCompras(id,productos){
+    return this.http.post(this.baseUrl + '/compra/'+id, productos);
+
+  }
+
   addCart(productId: number) {
     let cartId = JSON.parse(localStorage.getItem('user_data')).cart.id;
 
@@ -50,6 +55,13 @@ export class CompraService {
     return this.http.delete<CartI>(
       `${this.baseUrl}/cart/${cartId}/${productId}`
     );
+  }
+  deleteUserCart(){
+    let userId = JSON.parse(localStorage.getItem('user_data')).id;
+    return this.http.delete(
+      `${this.baseUrl}/cart/${userId}`);
+
+
   }
 
   getMisCompras(id: number) {

@@ -15,7 +15,7 @@ import { Routes, RouterModule } from '@angular/router';
     ReadMessagesComponent,
     UserControlComponent,
     MessageContentComponent,
-  ],
+   ],
   imports: [
     BrowserModule,
     CoreModule,

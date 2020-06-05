@@ -562,3 +562,8 @@ body {
 .language-check {
   background-color: #ff4081;
 }
+
+.logo{
+  width: 50px;
+  height: auto;
+}

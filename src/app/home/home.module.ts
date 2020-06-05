@@ -21,6 +21,7 @@ import { SearchComponent } from './search/search.component';
 import { NgxPayPalModule } from 'ngx-paypal';
 import { ProductHolderComponent } from './category/product-holder/product-holder.component';
  import { AuthModule } from '../auth/auth.module';
+import { DialogoConfirmacionComponent } from './dialogo-confirmacion/dialogo-confirmacion.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { ProductHolderComponent } from './category/product-holder/product-holder
     ChatComponent,
     LoadingSpinnerComponent,
     ProductHolderComponent,
+    DialogoConfirmacionComponent,
    ],
   imports: [
     BrowserModule,
@@ -62,7 +64,8 @@ import { ProductHolderComponent } from './category/product-holder/product-holder
     LaptopComponent,
     MobileComponent,
     ChatComponent,
-    NgxPayPalModule
+    NgxPayPalModule,
+    DialogoConfirmacionComponent
    ],
   providers: [],
   bootstrap: [],

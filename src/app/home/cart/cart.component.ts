@@ -16,6 +16,10 @@ export interface UnitAmountI {
   currency_code: string;
   value: string;
 }
+export interface ProductCompra {
+  id: number;
+  cantidad: number;
+}
 
 @Component({
   selector: 'app-cart',
@@ -26,9 +30,11 @@ export class CartComponent implements OnInit {
   public payPalConfig?: IPayPalConfig;
   cartTotal: number = 0;
   items: ItemI[] = [];
+  quantityArray: string[] = [];
 
   cartObservable = new Observable<ProductI[]>();
   cartItems: ProductI[] = [];
+  compraProductos: ProductCompra[] = [];
   showSuccess: boolean;
   showCancel: boolean;
   showError: boolean;
@@ -41,6 +47,7 @@ export class CartComponent implements OnInit {
   ngOnInit(): void {
     this.initConfig();
 
+    console.log(this.cartTotal);
     /*  this.authService.userData.subscribe(data=>{
       this.cartItems=data.cart.products;
     }) */
@@ -50,7 +57,7 @@ export class CartComponent implements OnInit {
       .subscribe((data) => {
         this.cartItems = data.products;
         this.setItems(this.cartItems);
-       });
+      });
   }
 
   private initConfig(): void {
@@ -105,6 +112,14 @@ export class CartComponent implements OnInit {
         layout: 'vertical',
       },
       onApprove: (data, actions) => {
+        this.compraService.addCompras(
+          +JSON.parse(localStorage.getItem('user_data')).id,
+          this.compraProductos
+        );
+        this.compraService.deleteUserCart();
+        localStorage.removeItem('item_quantity');
+
+
         console.log(
           'onApprove - transaction was approved, but not authorized',
           data,
@@ -131,6 +146,7 @@ export class CartComponent implements OnInit {
         console.log('OnError', err);
       },
       onClick: (data, actions) => {
+        console.log(this.cartTotal);
         console.log('onClick', data, actions);
       },
     };
@@ -155,7 +171,35 @@ export class CartComponent implements OnInit {
     );
   }
 
+  getQuantity(index: number, value) {
+    let total = 0;
+    let quantityArray = [];
+    let i = 0;
+    this.items[index].quantity = value.toString();
+
+    this.items.forEach((item) => {
+      this.compraProductos[i] = {
+        id: 0,
+        cantidad: 0,
+      };
+      this.compraProductos[i].id = this.cartItems[i].id;
+      this.compraProductos[i].cantidad = +item.quantity;
+
+      quantityArray.push(item.quantity);
+      total = total + +item.unit_amount.value * +item.quantity;
+      i++;
+    });
+    this.cartTotal = total;
+
+    localStorage.setItem('item_quantity', JSON.stringify(quantityArray));
+
+    console.log(this.cartTotal);
+    console.log(this.compraProductos);
+  }
+
   setItems(cartItems) {
+    let index = 0;
+    let quantityArray = [];
     cartItems.forEach((item) => {
       let cartItem: ItemI = {
         category: '',
@@ -168,11 +212,32 @@ export class CartComponent implements OnInit {
       };
       cartItem.category = 'DIGITAL_GOODS';
       cartItem.name = item.nombre;
-      cartItem.quantity = '1';
+
+      if (localStorage.getItem('item_quantity')) {
+        cartItem.quantity = JSON.parse(localStorage.getItem('item_quantity'))[
+          index
+        ].toString();
+
+        quantityArray[index] = cartItem.quantity = JSON.parse(
+          localStorage.getItem('item_quantity')
+        )[index].toString();
+      } else {
+        cartItem.quantity = '1';
+        quantityArray[index] = 1;
+      }
+
       cartItem.unit_amount.value = item.precio.toString();
       cartItem.unit_amount.currency_code = 'EUR';
-      this.cartTotal = this.cartTotal + item.precio;
       this.items.push(cartItem);
+      index++;
     });
+
+    localStorage.setItem('item_quantity', JSON.stringify(quantityArray));
+
+    let total = 0;
+    this.items.forEach((item) => {
+      total = total + +item.unit_amount.value * +item.quantity;
+    });
+    this.cartTotal = total;
   }
 }

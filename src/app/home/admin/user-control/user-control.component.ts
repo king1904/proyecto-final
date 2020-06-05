@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserI } from 'src/app/shared/backendModels/interfaces';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogoConfirmacionComponent } from '../../dialogo-confirmacion/dialogo-confirmacion.component';
 
 @Component({
   selector: 'app-user-control',
@@ -13,11 +15,15 @@ import { UserI } from 'src/app/shared/backendModels/interfaces';
 export class UserControlComponent implements OnInit {
   isLoading: boolean = true;
   users$: UserI[];
-  p:number=1;
+  p: number = 1;
   activeArray: boolean[] = [];
   roleArray: string[] = [];
 
-  constructor(private authService: AuthService, public snackBar: MatSnackBar) {}
+  constructor(
+    private authService: AuthService,
+    public snackBar: MatSnackBar,
+    public dialogo: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.getUsers().subscribe((data) => {
@@ -88,5 +94,21 @@ export class UserControlComponent implements OnInit {
 
   selectRole(value, pos) {
     this.roleArray[pos] = value;
+  }
+
+  mostrarDialogo(userId: number): void {
+    this.dialogo
+      .open(DialogoConfirmacionComponent, {
+        data: `¿Estás seguro que quieres Borrar este Usuario?`,
+      })
+      .afterClosed()
+      .subscribe((confirmado: Boolean) => {
+        if (confirmado) {
+          this.deleteUser(userId);
+          alert('Usuario Borrado con éxito!!');
+        } else {
+          alert('No has Borrado al usuario!!');
+        }
+      });
   }
 }
