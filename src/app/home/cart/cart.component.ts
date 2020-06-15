@@ -31,7 +31,7 @@ export class CartComponent implements OnInit {
   cartTotal: number = 0;
   items: ItemI[] = [];
   quantityArray: string[] = [];
-
+  isLoading = true;
   cartObservable = new Observable<ProductI[]>();
   cartItems: ProductI[] = [];
   compraProductos: ProductCompra[] = [];
@@ -47,7 +47,7 @@ export class CartComponent implements OnInit {
   ngOnInit(): void {
     this.initConfig();
 
-    console.log(this.cartTotal);
+    console.log(this.items);
     /*  this.authService.userData.subscribe(data=>{
       this.cartItems=data.cart.products;
     }) */
@@ -57,6 +57,7 @@ export class CartComponent implements OnInit {
       .subscribe((data) => {
         this.cartItems = data.products;
         this.setItems(this.cartItems);
+        this.isLoading = false;
       });
   }
 
@@ -112,13 +113,19 @@ export class CartComponent implements OnInit {
         layout: 'vertical',
       },
       onApprove: (data, actions) => {
-        this.compraService.addCompras(
-          +JSON.parse(localStorage.getItem('user_data')).id,
-          this.compraProductos
-        );
-        this.compraService.deleteUserCart();
-        localStorage.removeItem('item_quantity');
-
+        this.compraService
+          .addCompras(
+            +JSON.parse(localStorage.getItem('user_data')).compras[0].id,
+            { productos: this.compraProductos }
+          )
+          .subscribe((data) => {
+            console.log(data);
+            this.compraService.deleteUserCart().subscribe((data: CartI) => {
+              this.cartItems = data.products;
+              this.compraService.cartItemsSubject.next(data.products.length);
+              localStorage.removeItem('item_quantity');
+            });
+          });
 
         console.log(
           'onApprove - transaction was approved, but not authorized',
@@ -182,7 +189,7 @@ export class CartComponent implements OnInit {
         id: 0,
         cantidad: 0,
       };
-      this.compraProductos[i].id = this.cartItems[i].id;
+      this.compraProductos[i].id = +this.cartItems[i].id;
       this.compraProductos[i].cantidad = +item.quantity;
 
       quantityArray.push(item.quantity);
@@ -213,7 +220,10 @@ export class CartComponent implements OnInit {
       cartItem.category = 'DIGITAL_GOODS';
       cartItem.name = item.nombre;
 
-      if (localStorage.getItem('item_quantity')) {
+      if (
+        localStorage.getItem('item_quantity') &&
+        JSON.parse(localStorage.getItem('item_quantity'))[0] != null
+      ) {
         cartItem.quantity = JSON.parse(localStorage.getItem('item_quantity'))[
           index
         ].toString();

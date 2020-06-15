@@ -13,9 +13,7 @@ export class ProfileComponent implements OnInit {
   user: UserI;
 
   updateForm = new FormGroup({
-    imgName: new FormControl(
-      JSON.parse(localStorage.getItem('user_data')).userDetails.img.name
-    ),
+    imgName: new FormControl(""),
     firstname: new FormControl(
       JSON.parse(localStorage.getItem('user_data')).userDetails.firstname
     ),
@@ -50,8 +48,13 @@ export class ProfileComponent implements OnInit {
     let user: UserI = this.authService.userData.value;
 
     let pass;
+    let  imgName;
+    this.updateForm.value.imgName.trim() == ''
+    ? (imgName= JSON.parse(localStorage.getItem('user_data')).userDetails.img.name)
+    : (imgName = this.updateForm.value.imgName);
+
     this.updateForm.value.password.trim() == ''
-      ? (pass = JSON.parse(localStorage.getItem('user_data')).password)
+      ? (pass = null)
       : (pass = this.updateForm.value.password);
 
     let userSent = {
@@ -65,7 +68,7 @@ export class ProfileComponent implements OnInit {
         info: this.updateForm.value.info,
         img: {
           id: JSON.parse(localStorage.getItem('user_data')).userDetails.img.id,
-          name: this.updateForm.value.imgName,
+          name: imgName,
           originalName: JSON.parse(localStorage.getItem('user_data'))
             .userDetails.img.originalName,
           date: JSON.parse(localStorage.getItem('user_data')).userDetails.img

@@ -13,7 +13,7 @@ export class CompraService {
   cartProducts: ProductI[];
 
   sessionCartItems;
- userData;
+  userData;
   comprasArray;
   comprasId: number[] = [];
 
@@ -21,27 +21,23 @@ export class CompraService {
 
   private baseUrl = environment.baseUrlRestServices;
 
-  constructor(private http: HttpClient,private authService:AuthService) {
+  constructor(private http: HttpClient, private authService: AuthService) {
     this.authService.userData.subscribe((data) => {
       this.userData = data;
     });
-    if(this.userData){
-      this
-      .getCartById(this.userData.cart.id)
-      .subscribe((data) => {
+    if (this.userData) {
+      this.getCartById(this.userData.cart.id).subscribe((data) => {
         this.cartItemsSubject.next(data.products.length);
-       });
+      });
     }
-
-   }
+  }
 
   addProduct(product) {
     return this.http.post(this.baseUrl + '/productos/', product);
   }
 
-  addCompras(id,productos){
-    return this.http.post(this.baseUrl + '/compra/'+id, productos);
-
+  addCompras(comprasId, productos) {
+    return this.http.post(this.baseUrl + '/compra/' + comprasId, productos);
   }
 
   addCart(productId: number) {
@@ -56,12 +52,10 @@ export class CompraService {
       `${this.baseUrl}/cart/${cartId}/${productId}`
     );
   }
-  deleteUserCart(){
-    let userId = JSON.parse(localStorage.getItem('user_data')).id;
-    return this.http.delete(
-      `${this.baseUrl}/cart/${userId}`);
+  deleteUserCart() {
+    let cartId = JSON.parse(localStorage.getItem('user_data')).cart.id;
 
-
+    return this.http.delete(`${this.baseUrl}/cart/${cartId}`);
   }
 
   getMisCompras(id: number) {

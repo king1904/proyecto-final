@@ -5,7 +5,7 @@
       Shipping cart
       <div class="clearfix"></div>
     </div>
-    <div class="card-body ">
+    <div class="card-body " *ngIf="!isLoading">
 
       <div class="row " *ngFor="let item of cartItems ,let i =index">
         <div class="col-12 col-sm-12 col-md-2 text-center">
@@ -24,7 +24,7 @@
           </div>
           <div class="col-3 col-sm-3 col-md-3">
             <div class="quantity">
-              <input type="number" step="1" max="{{ item.stock }}" min="1" value="{{items[i].quantity}}" title="Qty" class="qty" size="4" (change)="getQuantity(i,$event.target.value)">
+              <input type="number" step="1" max="{{ item.stock }}" min="1" value="{{items[i].quantity}}" title="Qty" class="qty" size="4" (change)="getQuantity(i,$event.target.value)"  >
             </div>
           </div>
           <div class="col-4 col-sm-4 col-md-4">
